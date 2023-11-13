@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Quản lý quán ăn</string>
+    <string name="text_btn_edit">Chỉnh sửa</string>
+    <string name="text_btn_delete">Xóa</string>
+    <string name="tv_foodinfo">Thông tin món ăn</string>
+    <string name="tv_curency_vnd">vnđ</string>
+    <string name="hint_nhap_so_luong">Nhập số lượng</string>
+    <string name="hint_nhap_gia_tien">Nhập giá tiền</string>
+    <string name="lorem">What is Lorem Ipsum?
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'
+        s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it
+        to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+        remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
+        passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
