@@ -29,9 +29,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.adapter.AdapterSpinner;
 import com.example.quanlyquanan.api.ApiError;
 import com.example.quanlyquanan.api.FoodApi;
 import com.example.quanlyquanan.model.Category;
@@ -63,11 +65,10 @@ public class FragmentCreateFood extends Fragment {
     private View mView;
     EditText edtFoodName, edtSoLuong, edtNote, edtPrice;
     ImageView foodImage;
-    ArrayAdapter arrayAdapterFoodType;
+    SpinnerAdapter arrayAdapterFoodType;
     Button btnSubmit;
     Spinner spinnerCategory;
     List<Category> categoryList;
-    List<String> categoryLabels;
     ImageView imgBack;
     List<Food> foodList;
     Permission permission;
@@ -117,7 +118,6 @@ public class FragmentCreateFood extends Fragment {
         foodImage = mView.findViewById(R.id.img_addfood_fragment_create_food);
 
         categoryList = (List<Category>) getArguments().get("category_list");
-        categoryLabels = ((List<String>) getArguments().get("category_labels"));
         foodList = (List<Food>) getArguments().get("food_list");
 
         permission = new Permission((AppCompatActivity) requireActivity());
@@ -358,7 +358,7 @@ public class FragmentCreateFood extends Fragment {
 
     private void initView() {
 
-        arrayAdapterFoodType = new ArrayAdapter(this.getContext(), android.R.layout.simple_list_item_1, categoryLabels);
+        arrayAdapterFoodType = new AdapterSpinner(this.getContext(), R.layout.item_spinner_selected, categoryList);
         spinnerCategory.setAdapter(arrayAdapterFoodType);
 
 //        loadCategoryList();

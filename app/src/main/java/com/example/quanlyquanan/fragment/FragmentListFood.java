@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 
 import androidx.appcompat.widget.SearchView;
 
@@ -25,6 +24,7 @@ import android.widget.Spinner;
 
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.adapter.AdapterListFood;
+import com.example.quanlyquanan.adapter.AdapterSpinner;
 import com.example.quanlyquanan.model.Category;
 import com.example.quanlyquanan.model.Food;
 
@@ -44,11 +44,10 @@ public class FragmentListFood extends Fragment {
     Spinner spinnerFoodType;
     SearchView searchView;
     List<Category> categoryList;
-    List<String> categoryLabels;
     List<Food> tempFoodList;
     List<Food> foodList;
 
-    ArrayAdapter spinnerAdapter;
+    AdapterSpinner spinnerAdapter;
     AdapterListFood adapterListFood;
     RecyclerView recyclerView;
     ImageView imgBack;
@@ -146,13 +145,11 @@ public class FragmentListFood extends Fragment {
         imgBack = mView.findViewById(R.id.ic_back_fragment_list_food);
 
         categoryList = (List<Category>) getArguments().get("category_list");
-        categoryLabels = ((List<String>) getArguments().get("category_labels"));
         foodList = (List<Food>) getArguments().get("food_list");
         tempFoodList = foodList;
-//        tempFoodList = new ArrayList<>();
-//        tempFoodList.addAll(foodList);
 
-        spinnerAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, categoryLabels);
+
+        spinnerAdapter = new AdapterSpinner(getActivity(), R.layout.item_spinner_dropdown, categoryList);
         spinnerFoodType.setAdapter(spinnerAdapter);
 
         adapterListFood = new AdapterListFood(getContext(), tempFoodList);
@@ -165,9 +162,8 @@ public class FragmentListFood extends Fragment {
     private void openFragmentCreateFood() {
 
         FragmentCreateFood fragmentCreateFood = new FragmentCreateFood();
-        if (categoryLabels != null) {
+        if (categoryList != null) {
             Bundle bundle = new Bundle();
-            bundle.putStringArrayList("category_labels", (ArrayList<String>) categoryLabels);
             bundle.putSerializable("category_list", (Serializable) categoryList);
             bundle.putSerializable("food_list", (Serializable) foodList);
 

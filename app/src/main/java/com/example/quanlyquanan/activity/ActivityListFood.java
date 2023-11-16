@@ -35,7 +35,6 @@ import retrofit2.Response;
 public class ActivityListFood extends AppCompatActivity {
     FrameLayout frameLayout;
     List<Food> foodList;
-    List<String> categoryLables;
     List<Category> categoryList;
 
     @Override
@@ -50,7 +49,6 @@ public class ActivityListFood extends AppCompatActivity {
     }
 
 
-
     private void setEvent() {
 
     }
@@ -60,7 +58,6 @@ public class ActivityListFood extends AppCompatActivity {
         frameLayout = findViewById(R.id.layout_content_activity_listfood);
 
         foodList = new ArrayList<>();
-        categoryLables = new ArrayList<>();
         categoryList = new ArrayList<>();
 
         openFragmentListFood();
@@ -78,7 +75,7 @@ public class ActivityListFood extends AppCompatActivity {
                     foodList.addAll(responseFood.getFoodList());
 
                     FragmentListFood fragmentListFood = (FragmentListFood) getSupportFragmentManager().findFragmentById(R.id.layout_content_activity_listfood);
-                    if(fragmentListFood!=null) {
+                    if (fragmentListFood != null) {
                         fragmentListFood.notifyDataLoaded();
                     }
                 } else {
@@ -106,10 +103,8 @@ public class ActivityListFood extends AppCompatActivity {
                         categoryList.clear();
                         categoryList.addAll(responseCategories.getCategoryList());
 
-                        setCategoryLables();
-
                         FragmentListFood fragmentListFood = (FragmentListFood) getSupportFragmentManager().findFragmentById(R.id.layout_content_activity_listfood);
-                        if(fragmentListFood!=null) {
+                        if (fragmentListFood != null) {
                             fragmentListFood.notifyDataLoaded();
                         }
                     }
@@ -123,14 +118,6 @@ public class ActivityListFood extends AppCompatActivity {
                 showFailedResponse();
             }
         });
-    }
-
-    private void setCategoryLables() {
-        categoryLables.clear();
-
-        for (int i = 0; i < categoryList.size(); i++) {
-            categoryLables.add(categoryList.get(i).getName());
-        }
     }
 
     private void showErrorResponse(Response<?> response) {
@@ -156,12 +143,9 @@ public class ActivityListFood extends AppCompatActivity {
     private void openFragmentListFood() {
         FragmentListFood fragmentListFood = new FragmentListFood();
         Bundle bundle = new Bundle();
-        if (foodList != null && categoryLables != null) {
-            bundle.putSerializable("food_list", (Serializable) foodList);
-            bundle.putStringArrayList("category_labels", (ArrayList<String>) categoryLables);
-            bundle.putSerializable("category_list", (Serializable) categoryList);
+        bundle.putSerializable("food_list", (Serializable) foodList);
+        bundle.putSerializable("category_list", (Serializable) categoryList);
 
-        }
         fragmentListFood.setArguments(bundle);
 
 
@@ -171,25 +155,16 @@ public class ActivityListFood extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    public List<Category> getCategoryList() {
-        return categoryList;
-    }
-
-    public List<String> getCategoryLables() {
-        return categoryLables;
-    }
     public void openFragmentUpdateFood(Food targetFood) {
 
         FragmentUpdateFood fragmentUpdateFood = new FragmentUpdateFood();
 
-        if (categoryLables != null) {
-            Bundle bundle = new Bundle();
-            bundle.putStringArrayList("category_labels", (ArrayList<String>) categoryLables);
-            bundle.putSerializable("category_list", (Serializable) categoryList);
-            bundle.putSerializable("food", (Serializable) targetFood);
 
-            fragmentUpdateFood.setArguments(bundle);
-        }
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("category_list", (Serializable) categoryList);
+        bundle.putSerializable("food", (Serializable) targetFood);
+        fragmentUpdateFood.setArguments(bundle);
+
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.layout_content_activity_listfood, fragmentUpdateFood);

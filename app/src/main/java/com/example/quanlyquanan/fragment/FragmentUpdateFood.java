@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.adapter.AdapterSpinner;
 import com.example.quanlyquanan.api.ApiError;
 import com.example.quanlyquanan.api.FoodApi;
 import com.example.quanlyquanan.filter.DecimalDigitsInputFilter;
@@ -55,9 +56,8 @@ public class FragmentUpdateFood extends Fragment {
 
     Food food;
     List<Category> categoryList;
-    List<String> categoryLabels;
 
-    ArrayAdapter adapterSpinner;
+    AdapterSpinner adapterSpinner;
 
 
     public FragmentUpdateFood() {
@@ -106,9 +106,8 @@ public class FragmentUpdateFood extends Fragment {
 //
         food = (Food) getArguments().getSerializable("food");
         categoryList = (List<Category>) getArguments().get("category_list");
-        categoryLabels = (List<String>) getArguments().get("category_labels");
 
-        adapterSpinner = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, categoryLabels);
+        adapterSpinner = new AdapterSpinner(getContext(), R.layout.item_spinner_selected, categoryList);
         spinnerCategory.setAdapter(adapterSpinner);
 
 //

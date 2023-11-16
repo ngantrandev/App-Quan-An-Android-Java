@@ -77,8 +77,8 @@
             android:background="@drawable/edit_text_border"
             android:hint="Nhập tên món"
             android:inputType="text"
-            android:padding="10dp"
             android:maxLength="20"
+            android:padding="10dp"
             android:text=""
             app:layout_constraintEnd_toStartOf="@+id/textView18"
             app:layout_constraintTop_toBottomOf="@+id/layout_title" />
@@ -211,14 +211,13 @@
         <Spinner
             android:id="@+id/sp_foodtype_fragment_modify_food"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="30dp"
             android:padding="0dp"
-            android:spinnerMode="dialog"
+            android:spinnerMode="dropdown"
             app:layout_constraintBottom_toBottomOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="@+id/edt_price_fragment_modifyfood"
             app:layout_constraintStart_toStartOf="@+id/edt_price_fragment_modifyfood"
-            app:layout_constraintTop_toTopOf="@+id/textView15"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="@+id/textView15" />
 
         <TextView
             android:id="@+id/textView15"

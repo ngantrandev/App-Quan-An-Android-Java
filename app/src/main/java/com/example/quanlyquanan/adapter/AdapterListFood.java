@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +14,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.activity.ActivityListFood;
 import com.example.quanlyquanan.api.ApiError;
 import com.example.quanlyquanan.api.FoodApi;
-import com.example.quanlyquanan.fragment.FragmentUpdateFood;
 import com.example.quanlyquanan.model.Food;
 import com.example.quanlyquanan.response.ResponseFoodById;
 import com.example.quanlyquanan.setting.MyApplication;
@@ -51,7 +47,7 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(this.context).inflate(R.layout.item_food_admin, parent, false);
+        View view = LayoutInflater.from(this.context).inflate(R.layout.item_food, parent, false);
 
         return new ViewHolder(view);
     }

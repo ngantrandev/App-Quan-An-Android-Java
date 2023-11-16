@@ -23,6 +23,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <activity
+            android:name=".activity.ActivityChart"
+            android:exported="false" />
+        <activity
             android:name=".activity.ActivityListTable"
             android:exported="false" />
         <activity

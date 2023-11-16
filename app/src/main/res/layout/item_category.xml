@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:background="@color/bg_color_item_food"
     android:layout_marginBottom="20dp"
-    android:orientation="vertical">
+    android:background="@drawable/background_border_rectangle_light"
+    android:orientation="vertical"
+    android:padding="10dp">
 
 
     <TextView

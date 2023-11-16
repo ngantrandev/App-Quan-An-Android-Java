@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_color_item_food">
+    android:background="@drawable/background_border_rectangle_light">
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -35,45 +35,58 @@
             android:textStyle="bold" />
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_fragment_list_food"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:alpha="0.8"
         android:background="@drawable/food_image"
-        android:paddingTop="20dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:scrollbars="none"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/frameLayout">
 
-        <Spinner
-            android:id="@+id/sp_fragment_listfood"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:padding="0dp"
-            android:textAlignment="center" />
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/sv_fragment_listfood"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/background_border_rectangle_light"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <Spinner
+                android:id="@+id/sp_fragment_listfood"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:spinnerMode="dropdown"
+                android:textAlignment="center" />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/sv_fragment_listfood"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/searchview_background"
+                app:iconifiedByDefault="false"
+                app:queryBackground="@null" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_fragment_list_food"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:alpha="0.8"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scrollbars="none" />
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
