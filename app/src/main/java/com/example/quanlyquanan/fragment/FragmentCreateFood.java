@@ -138,6 +138,7 @@ public class FragmentCreateFood extends Fragment {
                 } else {
                     Toast.makeText(getContext(), "Vui lòng chọn ảnh", Toast.LENGTH_LONG).show();
                 }
+//                postNewFood();
             }
         });
 
@@ -209,22 +210,24 @@ public class FragmentCreateFood extends Fragment {
     }
 
     private void postNewFood() {
-        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);
-        File file = new File(realPathImage);
-        RequestBody requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
-
-        Log.d("MYMY", String.valueOf(file.length()));
-        Log.d("MYMY", "realPath = null " + realPathImage == null ? "YES" : "NO");
-        Log.d("MYMY", "imgFile exists " + ((file.exists()) ? "YES" : "NO"));
-        Log.d("MYMY", "File Length: " + file.length());
-        Log.d("MYMY", "File Exists: " + file.exists());
-        Log.d("MYMY", "File name: " + file.getName());
+        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);;
+        File  file = new File(realPathImage);;
+        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);;
+        MultipartBody.Part  multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);;
 
 
-        Log.d("MYMY", "uri:   " + mUri);
-        Log.d("MYMY", "realpath:  " + realPathImage);
-//        Log.d("MYMY", multipartBody.body().toString());
+        if (mUri != null) {
+
+            Log.d("MYMY", String.valueOf(file.length()));
+            Log.d("MYMY", "realPath = null " + realPathImage == null ? "YES" : "NO");
+            Log.d("MYMY", "imgFile exists " + ((file.exists()) ? "YES" : "NO"));
+            Log.d("MYMY", "File Length: " + file.length());
+            Log.d("MYMY", "File Exists: " + file.exists());
+            Log.d("MYMY", "File name: " + file.getName());
+            Log.d("MYMY", "uri:   " + mUri);
+            Log.d("MYMY", "realpath:  " + realPathImage);
+        }
+
 
         int selectedItemCategory = spinnerCategory.getSelectedItemPosition(); // lay index item spinner
         Category category = categoryList.get(selectedItemCategory); // ánh xạ sang categoryList
@@ -246,17 +249,40 @@ public class FragmentCreateFood extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 alertDialog.dismiss();
-                FoodApi.foodApi.postFood(
-                        multipartBody,
-                        edtFoodName.getText().toString().trim(),
-                        edtPrice.getText().toString().trim(),
-                        edtNote.getText().toString().trim(),
-                        edtSoLuong.getText().toString().trim(),
-                        category.get_id()
-                ).enqueue(new Callback<ResponseFoodById>() {
+
+                if (mUri == null) {
+                    uploadFoodWithoutImg(
+                            edtFoodName.getText().toString().trim(),
+                            edtPrice.getText().toString().trim(),
+                            edtNote.getText().toString().trim(),
+                            edtSoLuong.getText().toString().trim(),
+                            category.get_id()
+                    );
+
+                } else {
+                    uploadFoodWithImg(multipartBody,
+                            edtFoodName.getText().toString().trim(),
+                            edtPrice.getText().toString().trim(),
+                            edtNote.getText().toString().trim(),
+                            edtSoLuong.getText().toString().trim(),
+                            category.get_id());
+                }
+            }
+        });
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void uploadFoodWithoutImg(String name, String price, String note, String soluong, String categoryID) {
+        FoodApi.foodApi.postFoodWithoutFile(name, price, note, soluong, categoryID)
+                .enqueue(new Callback<ResponseFoodById>() {
                     @Override
                     public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
-
                         if (response.isSuccessful()) {
                             if (response.body().getStatus().equals("Success")) {
                                 Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_CREATEFOOD_SUCCESS, Toast.LENGTH_LONG).show();
@@ -267,12 +293,10 @@ public class FragmentCreateFood extends Fragment {
 
                                 // reset edittext
                                 edtFoodName.setText("");
-                                edtPrice.setText("");
-                                edtSoLuong.setText("");
+                                edtPrice.setText("0");
+                                edtSoLuong.setText("0");
                                 edtNote.setText("");
                                 foodImage.setImageResource(R.drawable.food_img_default);
-
-
                             } else {
                                 Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_CREATEFOOD_FAILED, Toast.LENGTH_LONG).show();
                             }
@@ -284,22 +308,51 @@ public class FragmentCreateFood extends Fragment {
 
                     @Override
                     public void onFailure(Call<ResponseFoodById> call, Throwable t) {
-                        Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_LONG).show();
+                        showFailedResponse();
                     }
                 });
-            }
-        });
-        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Hủy", new DialogInterface.OnClickListener() {
+    }
+
+    private void uploadFoodWithImg(MultipartBody.Part multipartBody, String name, String price, String note, String soLuong, String categoryId) {
+        FoodApi.foodApi.postFood(
+                multipartBody,
+                name,
+                price,
+                note,
+                soLuong,
+                categoryId
+        ).enqueue(new Callback<ResponseFoodById>() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                alertDialog.dismiss();
+            public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
+
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus().equals("Success")) {
+                        Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_CREATEFOOD_SUCCESS, Toast.LENGTH_LONG).show();
+                        ResponseFoodById responseFood = response.body();
+
+                        Food food = responseFood.getFood();
+                        foodList.add(food);
+
+                        // reset edittext
+                        edtFoodName.setText("");
+                        edtPrice.setText("0");
+                        edtSoLuong.setText("0");
+                        edtNote.setText("");
+                        foodImage.setImageResource(R.drawable.food_img_default);
+                    } else {
+                        Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_CREATEFOOD_FAILED, Toast.LENGTH_LONG).show();
+                    }
+
+                } else {
+                    showErrorResponse(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseFoodById> call, Throwable t) {
+                Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_LONG).show();
             }
         });
-        alertDialog.show();
-
-
-//
-
     }
 
 

@@ -5,5 +5,8 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.QuanLyQuanAn" parent="Base.Theme.QuanLyQuanAn" />
+    <style name="Theme.QuanLyQuanAn" parent="Base.Theme.QuanLyQuanAn" >
+        <item name="colorPrimary">#FA9A7C</item> <!-- Đặt màu chính -->
+    </style>
+
 </resources>

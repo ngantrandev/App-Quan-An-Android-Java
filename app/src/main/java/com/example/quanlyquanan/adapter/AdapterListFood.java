@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.activity.ActivityListFood;
 import com.example.quanlyquanan.api.ApiError;
 import com.example.quanlyquanan.api.FoodApi;
-import com.example.quanlyquanan.fragment.FragmentCreateFood;
+import com.example.quanlyquanan.fragment.FragmentUpdateFood;
 import com.example.quanlyquanan.model.Food;
 import com.example.quanlyquanan.response.ResponseFoodById;
 import com.example.quanlyquanan.setting.MyApplication;
@@ -32,8 +33,6 @@ import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -61,13 +60,14 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Food food = this.data.get(position);
         int oldPrice = food.getPrice();
-        int newPrice = (int) (oldPrice * (1 - food.getDiscount()));
+        int newPrice = (int) (oldPrice * (1 - food.getDiscount()/100));
 
         holder.tvFoodName.setText(food.getName());
         holder.tvFoodDesc.setText(food.getDescription());
         holder.tvOldPrice.setText(String.valueOf(oldPrice));
         holder.tvNewPrice.setText(String.valueOf(newPrice));
         holder.tvSoLuongTon.setText(String.valueOf(food.getSoLuongTon()));
+        holder.tvType.setText(food.getCategory().getName());
 
         if(oldPrice == newPrice) {
             holder.tvOldPrice.setVisibility(View.INVISIBLE);
@@ -93,6 +93,14 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
     }
 
     private void setEvent(ViewHolder holder, int position) {
+        holder.btnModify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityListFood activityListFood = (ActivityListFood) context;
+                activityListFood.openFragmentUpdateFood(data.get(position));
+            }
+        });
+
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +156,7 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvFoodName, tvFoodDesc, tvNewPrice, tvOldPrice, tvSoLuongTon, tvCurrencyLabelOldPrice;
+        private TextView tvFoodName, tvFoodDesc, tvNewPrice, tvOldPrice, tvSoLuongTon, tvCurrencyLabelOldPrice, tvType;
         private ImageView foodImg;
         Button btnDelete, btnModify;
 
@@ -159,6 +167,7 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
             tvFoodDesc = itemView.findViewById(R.id.tv_fooddesc);
             tvNewPrice = itemView.findViewById(R.id.tv_newprice);
             tvOldPrice = itemView.findViewById(R.id.tv_oldprice);
+            tvType = itemView.findViewById(R.id.tvFoodType_itemfood_admin);
             tvSoLuongTon = itemView.findViewById(R.id.tv_soluongton);
             foodImg = itemView.findViewById(R.id.tv_foodimg);
             btnModify = itemView.findViewById(R.id.btn_modify_food);
@@ -186,4 +195,6 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
     private void showFailedResponse() {
         Toast.makeText(context, MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_SHORT).show();
     }
+
+
 }

@@ -13,11 +13,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import androidx.appcompat.widget.SearchView;
 
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
@@ -38,12 +40,14 @@ import java.util.List;
 public class FragmentListFood extends Fragment {
 
     private View mView;
-    private Button btnAddFood;
+    private ImageButton btnAddFood;
     Spinner spinnerFoodType;
     SearchView searchView;
     List<Category> categoryList;
     List<String> categoryLabels;
+    List<Food> tempFoodList;
     List<Food> foodList;
+
     ArrayAdapter spinnerAdapter;
     AdapterListFood adapterListFood;
     RecyclerView recyclerView;
@@ -74,7 +78,6 @@ public class FragmentListFood extends Fragment {
         setEvent();
 
 
-
         Log.d("FragmentListFood", "onCreateView: ");
 
         return mView;
@@ -100,6 +103,37 @@ public class FragmentListFood extends Fragment {
             }
         });
 
+        spinnerFoodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinnerFoodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                        Log.d("MYMY","Food list size"+ String.valueOf(foodList.size()));
+//                        tempFoodList.clear();
+//                        String selectedCategory = spinnerFoodType.getSelectedItem().toString();
+//
+//                        for (Food item : foodList) {
+//                            if (item.getCategory().getName().equalsIgnoreCase(selectedCategory)) {
+//                                tempFoodList.add(item);
+//                            }
+//                        }
+//                        adapterListFood.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
     }
 
@@ -114,11 +148,14 @@ public class FragmentListFood extends Fragment {
         categoryList = (List<Category>) getArguments().get("category_list");
         categoryLabels = ((List<String>) getArguments().get("category_labels"));
         foodList = (List<Food>) getArguments().get("food_list");
+        tempFoodList = foodList;
+//        tempFoodList = new ArrayList<>();
+//        tempFoodList.addAll(foodList);
 
         spinnerAdapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, categoryLabels);
         spinnerFoodType.setAdapter(spinnerAdapter);
 
-        adapterListFood = new AdapterListFood(getContext(), foodList);
+        adapterListFood = new AdapterListFood(getContext(), tempFoodList);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapterListFood);
@@ -138,9 +175,14 @@ public class FragmentListFood extends Fragment {
         }
 
         FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.layout_content, fragmentCreateFood);
+        fragmentTransaction.replace(R.id.layout_content_activity_listfood, fragmentCreateFood);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    public void notifyDataLoaded() {
+        spinnerAdapter.notifyDataSetChanged();
+        adapterListFood.notifyDataSetChanged();
     }
 
 }

@@ -9,6 +9,13 @@ public class Table {
     private String tableName;
     int status;
 
+    public Table(String _id, String note, String tableName, int status) {
+        this._id = _id;
+        this.note = note;
+        this.tableName = tableName;
+        this.status = status;
+    }
+
     public String get_id() {
         return _id;
     }

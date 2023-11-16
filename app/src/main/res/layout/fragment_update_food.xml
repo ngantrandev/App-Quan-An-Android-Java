@@ -1,264 +1,273 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="20dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tên món:"
-        app:layout_constraintBottom_toBottomOf="@+id/edt_foodname_fragment_modifyfood"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/edt_foodname_fragment_modifyfood" />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Số lượng:"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Giá tiền:"
-        app:layout_constraintStart_toStartOf="@+id/textView11"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        counterEnabled="true"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        app:counterEnabled="true"
-        app:counterMaxLength="60"
-        app:layout_constraintEnd_toEndOf="@+id/textView18"
-        app:layout_constraintStart_toStartOf="@+id/textView17"
-        app:layout_constraintTop_toBottomOf="@+id/textView17">
-
-        <EditText
-            android:id="@+id/edt_note_fragment_modifyfood"
-            android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@drawable/edit_text_border"
-            android:gravity="top"
-            android:hint="Ghi chú tại đây"
-            android:inputType="text|textMultiLine"
-            android:maxLength="60"
-            android:padding="10dp"
-            android:paddingBottom="20dp"
-            android:scrollbars="horizontal"
-            android:text=""
-            tools:layout_editor_absoluteX="104dp"
-            tools:layout_editor_absoluteY="371dp" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <EditText
-        android:id="@+id/edt_foodname_fragment_modifyfood"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="4dp"
-        android:background="@drawable/edit_text_border"
-        android:hint="Nhập tên món"
-        android:padding="10dp"
-        android:text=""
-        app:layout_constraintEnd_toStartOf="@+id/textView18"
-        app:layout_constraintTop_toBottomOf="@+id/layout_title" />
-
-    <EditText
-        android:id="@+id/edt_soluong_modify_food"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:background="@drawable/edit_text_border"
-        android:digits="1234567890"
-        android:gravity="center"
-        android:hint="0"
-        android:inputType="number"
-        android:maxLength="6"
-        android:text=""
-        android:textSize="13dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_decrease"
-        app:layout_constraintEnd_toStartOf="@+id/hi"
-        app:layout_constraintStart_toEndOf="@+id/btn_decrease"
-        app:layout_constraintTop_toTopOf="@+id/btn_decrease"
-        app:layout_constraintVertical_bias="0.714" />
-
-    <ImageView
-        android:id="@+id/btn_decrease"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_minus"
-        app:layout_constraintBottom_toBottomOf="@+id/textView11"
-        app:layout_constraintStart_toStartOf="@+id/edt_foodname_fragment_modifyfood"
-        app:layout_constraintTop_toTopOf="@+id/textView11" />
-
-    <ImageView
-        android:id="@+id/hi"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_plus"
-        app:layout_constraintBottom_toBottomOf="@+id/textView11"
-        app:layout_constraintEnd_toEndOf="@+id/edt_foodname_fragment_modifyfood"
-        app:layout_constraintTop_toTopOf="@+id/textView11" />
-
-    <TextView
-        android:id="@+id/textView17"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Ghi chú"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textView14"
-        app:layout_constraintTop_toBottomOf="@+id/sp_foodtype_fragment_modify_food" />
-
-    <EditText
-        android:id="@+id/edt_price_fragment_modifyfood"
-        android:layout_width="197dp"
-        android:layout_height="37dp"
-        android:background="@drawable/edit_text_border"
-        android:digits="1234567890"
-        android:gravity="center"
-        android:hint="0"
-        android:inputType="number"
-        android:maxLength="6"
-        android:text=""
-        android:textSize="13dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView14"
-        app:layout_constraintEnd_toEndOf="@+id/edt_foodname_fragment_modifyfood"
-        app:layout_constraintStart_toStartOf="@+id/edt_foodname_fragment_modifyfood"
-        app:layout_constraintTop_toTopOf="@+id/textView14" />
-
-    <EditText
-        android:id="@+id/trangthai"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:background="@drawable/edit_text_border"
-        android:digits="1234567890"
-        android:gravity="center"
-        android:hint="0"
-        android:inputType="numberDecimal"
-        android:maxLength="6"
-        android:text=""
-        android:textSize="13dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView9"
-        app:layout_constraintEnd_toEndOf="@+id/edt_price_fragment_modifyfood"
-        app:layout_constraintStart_toStartOf="@+id/edt_price_fragment_modifyfood"
-        app:layout_constraintTop_toTopOf="@+id/textView9" />
-
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/tv_curency_vnd"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/textView14"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView14" />
-
-    <Button
-        android:id="@+id/btn_submit_fragment_modifyfood"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Thay đổi"
-        app:layout_constraintBottom_toBottomOf="@+id/img_addfood_fragment_modifyfood"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/img_addfood_fragment_modifyfood" />
-
-    <FrameLayout
-        android:id="@+id/layout_title"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/ic_back_fragment_updatefood"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="0dp"
-            android:src="@drawable/ic_back" />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:text="Tên món:"
+            app:layout_constraintBottom_toBottomOf="@+id/edt_foodname_fragment_modifyfood"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edt_foodname_fragment_modifyfood" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Số lượng:"
+            app:layout_constraintStart_toStartOf="@+id/textView10"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Giá tiền:"
+            app:layout_constraintStart_toStartOf="@+id/textView11"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            counterEnabled="true"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="60"
+            app:layout_constraintEnd_toEndOf="@+id/textView18"
+            app:layout_constraintStart_toStartOf="@+id/textView17"
+            app:layout_constraintTop_toBottomOf="@+id/textView17">
+
+            <EditText
+                android:id="@+id/edt_note_fragment_modifyfood"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@drawable/edit_text_border"
+                android:gravity="top"
+                android:hint="Ghi chú tại đây"
+                android:inputType="text|textMultiLine"
+                android:maxLength="60"
+                android:padding="10dp"
+                android:paddingBottom="20dp"
+                android:scrollbars="horizontal"
+                android:text=""
+                tools:layout_editor_absoluteX="104dp"
+                tools:layout_editor_absoluteY="371dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <EditText
+            android:id="@+id/edt_foodname_fragment_modifyfood"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="Nhập tên món"
+            android:inputType="text"
+            android:padding="10dp"
+            android:maxLength="20"
+            android:text=""
+            app:layout_constraintEnd_toStartOf="@+id/textView18"
+            app:layout_constraintTop_toBottomOf="@+id/layout_title" />
+
+        <EditText
+            android:id="@+id/edt_soluong_fragment_modify_food"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/edit_text_border"
+            android:digits="1234567890"
             android:gravity="center"
-            android:text="Chỉnh sửa món ăn"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+            android:hint="0"
+            android:inputType="number"
+            android:maxLength="6"
+            android:text=""
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_decrease"
+            app:layout_constraintEnd_toStartOf="@+id/hi"
+            app:layout_constraintStart_toEndOf="@+id/btn_decrease"
+            app:layout_constraintTop_toTopOf="@+id/btn_decrease"
+            app:layout_constraintVertical_bias="0.714" />
 
-    <Spinner
-        android:id="@+id/sp_foodtype_fragment_modify_food"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="0dp"
-        android:spinnerMode="dialog"
-        app:layout_constraintBottom_toBottomOf="@+id/textView15"
-        app:layout_constraintEnd_toEndOf="@+id/edt_price_fragment_modifyfood"
-        app:layout_constraintStart_toStartOf="@+id/edt_price_fragment_modifyfood"
-        app:layout_constraintTop_toTopOf="@+id/textView15"
-        app:layout_constraintVertical_bias="1.0" />
+        <ImageView
+            android:id="@+id/btn_decrease"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_minus"
+            app:layout_constraintBottom_toBottomOf="@+id/textView11"
+            app:layout_constraintStart_toStartOf="@+id/edt_foodname_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/textView11" />
 
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Loại món ăn:"
-        app:layout_constraintStart_toStartOf="@+id/textView14"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        <ImageView
+            android:id="@+id/hi"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_plus"
+            app:layout_constraintBottom_toBottomOf="@+id/textView11"
+            app:layout_constraintEnd_toEndOf="@+id/edt_foodname_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/textView11" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/img_addfood_fragment_modifyfood"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:alpha="0.4"
-        android:src="@drawable/food_img_default"
-        app:civ_border_width="1dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Ghi chú"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/textView14"
+            app:layout_constraintTop_toBottomOf="@+id/sp_foodtype_fragment_modify_food" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintBottom_toBottomOf="@+id/img_addfood_fragment_modifyfood"
-        app:layout_constraintEnd_toEndOf="@+id/img_addfood_fragment_modifyfood"
-        app:layout_constraintStart_toStartOf="@+id/img_addfood_fragment_modifyfood"
-        app:layout_constraintTop_toTopOf="@+id/img_addfood_fragment_modifyfood"
-        app:srcCompat="@drawable/ic_camera" />
+        <EditText
+            android:id="@+id/edt_price_fragment_modifyfood"
+            android:layout_width="197dp"
+            android:layout_height="37dp"
+            android:background="@drawable/edit_text_border"
+            android:digits="1234567890"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="number"
+            android:maxLength="6"
+            android:text=""
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView14"
+            app:layout_constraintEnd_toEndOf="@+id/edt_foodname_fragment_modifyfood"
+            app:layout_constraintStart_toStartOf="@+id/edt_foodname_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/textView14" />
 
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Giảm giá"
-        app:layout_constraintStart_toStartOf="@+id/textView14"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
+        <EditText
+            android:id="@+id/edt_discount_fragment_modifyfood"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:background="@drawable/edit_text_border"
+            android:digits="0123456789."
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="numberDecimal"
+            android:maxLength="6"
+            android:text=""
+            android:textSize="13dp"
+            app:layout_constraintBottom_toBottomOf="@+id/textView9"
+            app:layout_constraintEnd_toEndOf="@+id/edt_price_fragment_modifyfood"
+            app:layout_constraintStart_toStartOf="@+id/edt_price_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/textView9" />
 
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="%"
-        android:textStyle="bold"
-        android:layout_marginLeft="5dp"
-        app:layout_constraintBottom_toBottomOf="@+id/trangthai"
-        app:layout_constraintStart_toEndOf="@+id/trangthai"
-        app:layout_constraintTop_toTopOf="@+id/trangthai" />
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_curency_vnd"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/textView14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView14" />
 
+        <Button
+            android:id="@+id/btn_submit_fragment_modifyfood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thay đổi"
+            app:layout_constraintBottom_toBottomOf="@+id/img_addfood_fragment_modifyfood"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/img_addfood_fragment_modifyfood" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView10"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ic_back_fragment_updatefood"
+                android:layout_width="25dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="0dp"
+                android:src="@drawable/ic_back" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Chỉnh sửa món ăn"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <Spinner
+            android:id="@+id/sp_foodtype_fragment_modify_food"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="0dp"
+            android:spinnerMode="dialog"
+            app:layout_constraintBottom_toBottomOf="@+id/textView15"
+            app:layout_constraintEnd_toEndOf="@+id/edt_price_fragment_modifyfood"
+            app:layout_constraintStart_toStartOf="@+id/edt_price_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/textView15"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Loại món ăn:"
+            app:layout_constraintStart_toStartOf="@+id/textView14"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_addfood_fragment_modifyfood"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:alpha="0.4"
+            android:src="@drawable/food_img_default"
+            app:civ_border_width="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/img_addfood_fragment_modifyfood"
+            app:layout_constraintEnd_toEndOf="@+id/img_addfood_fragment_modifyfood"
+            app:layout_constraintStart_toStartOf="@+id/img_addfood_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/img_addfood_fragment_modifyfood"
+            app:srcCompat="@drawable/ic_camera" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Giảm giá"
+            app:layout_constraintStart_toStartOf="@+id/textView14"
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+        <TextView
+            android:id="@+id/textView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="%"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/edt_discount_fragment_modifyfood"
+            app:layout_constraintStart_toEndOf="@+id/edt_discount_fragment_modifyfood"
+            app:layout_constraintTop_toTopOf="@+id/edt_discount_fragment_modifyfood" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

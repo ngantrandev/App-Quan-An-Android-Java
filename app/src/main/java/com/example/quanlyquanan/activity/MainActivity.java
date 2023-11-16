@@ -17,7 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private Button  btnShowFood, btnShowCategory;
+    private Button  btnShowFood, btnShowCategory, btnShowTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         setControl();
         setEvent();
-        getData();
+//        getData();
     }
 
 
@@ -41,60 +41,29 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btnShowCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ActivityListCategory.class);
+                startActivity(intent);
+            }
+        });
+
+        btnShowTable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ActivityListTable.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setControl() {
         btnShowCategory = findViewById(R.id.btn_show_category_mainactivity);
         btnShowFood = findViewById(R.id.btn_show_listfood_mainactivity);
+        btnShowTable = findViewById(R.id.btn_show_tablelist_mainactivity);
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("CHECKACTIVITY", "MainActivity On start");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("CHECKACTIVITY", "MainActivity On resume");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d("CHECKACTIVITY", "MainActivity On pause");
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.d("CHECKACTIVITY", "MainActivity On stop");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d("CHECKACTIVITY", "MainActivity On destroy");
-    }
-
-
-    private void getData() {
-        FoodApi.foodApi.getFoods().enqueue(new Callback<ResponseFood>() {
-            @Override
-            public void onResponse(Call<ResponseFood> call, Response<ResponseFood> response) {
-                if(response.isSuccessful()) {
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseFood> call, Throwable t) {
-
-            }
-        });
     }
 
 }

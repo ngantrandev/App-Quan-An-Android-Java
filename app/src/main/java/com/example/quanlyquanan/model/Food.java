@@ -4,19 +4,31 @@ import java.io.Serializable;
 
 public class Food implements Serializable {
     String _id, name, description, imgUrl;
-    int price, soLuongTon,status;
+    int price, soLuongTon, status;
     float discount;
     Category category;
 
-    public Food(String name, String description, String imgUrl, int price, int soLuongTon, Category category) {
-        this._id = "";
+//    public Food(String name, String description, String imgUrl, int price, int soLuongTon, Category category) {
+//        this._id = "";
+//        this.name = name;
+//        this.description = description;
+//        this.imgUrl = imgUrl;
+//        this.price = price;
+//        this.soLuongTon = soLuongTon;
+//        this.status = 1;
+//        this.discount = 0;
+//        this.category = category;
+//    }
+
+    public Food(String _id, String name, String description, String imgUrl, int price, int soLuongTon, int status, float discount, Category category) {
+        this._id = _id;
         this.name = name;
         this.description = description;
         this.imgUrl = imgUrl;
         this.price = price;
         this.soLuongTon = soLuongTon;
-        this.status = 1;
-        this.discount = 0;
+        this.status = status;
+        this.discount = discount;
         this.category = category;
     }
 
@@ -91,4 +103,5 @@ public class Food implements Serializable {
     public void setCategory(Category category) {
         this.category = category;
     }
+
 }

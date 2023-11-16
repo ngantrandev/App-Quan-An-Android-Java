@@ -4,10 +4,20 @@ import java.io.Serializable;
 
 public class Category implements Serializable {
     private String _id, name;
+    private int foodnumber;
 
-    public Category(String _id, String name) {
+    public Category(String _id, String name, int foodnumber) {
         this._id = _id;
         this.name = name;
+        this.foodnumber = foodnumber;
+    }
+
+    public int getFoodnumber() {
+        return foodnumber;
+    }
+
+    public void setFoodnumber(int foodnumber) {
+        this.foodnumber = foodnumber;
     }
 
     public String get_id() {
