@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -43,6 +44,13 @@ public class ActivityListTable extends AppCompatActivity {
     }
 
     private void setEvent() {
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityListTable.this.finish();
+            }
+        });
     }
 
     private void setControl() {

@@ -1,35 +1,38 @@
 package com.example.quanlyquanan.activity;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.quanlyquanan.R;
-import com.example.quanlyquanan.api.FoodApi;
-import com.example.quanlyquanan.response.ResponseFood;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class MainActivity extends AppCompatActivity {
-    private Button  btnShowFood, btnShowCategory, btnShowTable;
+    private ImageButton btnShowFood, btnShowCategory, btnShowTable, btnThongKe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("CHECKACTIVITY", "MainActivity On create");
 
         setControl();
         setEvent();
 //        getData();
     }
-
 
 
     private void setEvent() {
@@ -58,20 +61,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_thongke_mainactivity).setOnClickListener(new View.OnClickListener() {
+        btnThongKe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ActivityChart.class);
                 startActivity(intent);
             }
         });
+
+        findViewById(R.id.btn_show_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View viewBottomSheet = LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_info_user, null);
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(MainActivity.this);
+                bottomSheetDialog.setContentView(viewBottomSheet);
+                ImageView btnBack = viewBottomSheet.findViewById(R.id.ic_back_layout_userinfo);
+
+                btnBack.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+
+                bottomSheetDialog.show();
+                BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) viewBottomSheet.getParent());
+                bottomSheetBehavior.setPeekHeight(1000);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
     }
 
     private void setControl() {
         btnShowCategory = findViewById(R.id.btn_show_category_mainactivity);
-        btnShowFood = findViewById(R.id.btn_show_listfood_mainactivity);
+        btnShowFood = findViewById(R.id.btn_showfood_activitymain);
         btnShowTable = findViewById(R.id.btn_show_tablelist_mainactivity);
-
+        btnThongKe = findViewById(R.id.btn_thongke_mainactivity);
     }
 
 }

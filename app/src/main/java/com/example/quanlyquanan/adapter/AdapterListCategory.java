@@ -161,6 +161,8 @@ public class AdapterListCategory extends RecyclerView.Adapter<AdapterListCategor
         bottomSheetDialog.show();
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) viewBottomSheet.getParent());
         bottomSheetBehavior.setPeekHeight(800);
+//        bottomSheetDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 

@@ -21,17 +21,23 @@ public class AdapterSpinnerDate extends ArrayAdapter<MyDate> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_spinner_selected,parent,false );
+        convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_spinner_selected, parent, false);
         TextView text = convertView.findViewById(R.id.tv_spinner_selected);
-        text.setText(this.getItem(position).getYear());
+        MyDate date = this.getItem(position);
+        text.setText(date.getMonth().length() == 1
+                ? "0" + date.getMonth() + "/" + date.getYear()
+                : date.getMonth() + "/" + date.getYear());
         return convertView;
     }
 
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_spinner_dropdown,parent,false );
+        convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_spinner_dropdown, parent, false);
         TextView text = convertView.findViewById(R.id.tv_spinner_dropdown);
-        text.setText(this.getItem(position).getYear());
+        MyDate date = this.getItem(position);
+        text.setText("Tháng " + (date.getMonth().length() == 1
+                ? "0" + date.getMonth() + "/" + date.getYear()
+                : date.getMonth() + "/" + date.getYear()));
         return convertView;
     }
 

@@ -49,6 +49,7 @@ import com.google.gson.JsonParser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MediaType;
@@ -212,14 +213,14 @@ public class FragmentCreateFood extends Fragment {
     private void postNewFood() {
         String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);;
         File  file = new File(realPathImage);;
-        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);;
-        MultipartBody.Part  multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);;
+        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part  multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
 
 
         if (mUri != null) {
 
             Log.d("MYMY", String.valueOf(file.length()));
-            Log.d("MYMY", "realPath = null " + realPathImage == null ? "YES" : "NO");
+            Log.d("MYMY", "realPath = null " + (realPathImage == null ? "YES" : "NO"));
             Log.d("MYMY", "imgFile exists " + ((file.exists()) ? "YES" : "NO"));
             Log.d("MYMY", "File Length: " + file.length());
             Log.d("MYMY", "File Exists: " + file.exists());
@@ -249,7 +250,7 @@ public class FragmentCreateFood extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 alertDialog.dismiss();
-
+                Log.d("TAG", "onClick00000000000000000000000: "+mUri);
                 if (mUri == null) {
                     uploadFoodWithoutImg(
                             edtFoodName.getText().toString().trim(),

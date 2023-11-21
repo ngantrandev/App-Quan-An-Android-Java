@@ -21,6 +21,7 @@ import androidx.appcompat.widget.SearchView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.adapter.AdapterListFood;
@@ -43,9 +44,8 @@ public class FragmentListFood extends Fragment {
     private ImageButton btnAddFood;
     Spinner spinnerFoodType;
     SearchView searchView;
-    List<Category> categoryList;
-    List<Food> tempFoodList;
-    List<Food> foodList;
+    List<Category> categoryList, categoryListLabel;
+    List<Food> foodList,tempFoodList;
 
     AdapterSpinner spinnerAdapter;
     AdapterListFood adapterListFood;
@@ -105,26 +105,18 @@ public class FragmentListFood extends Fragment {
         spinnerFoodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                spinnerFoodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                        Log.d("MYMY","Food list size"+ String.valueOf(foodList.size()));
-//                        tempFoodList.clear();
-//                        String selectedCategory = spinnerFoodType.getSelectedItem().toString();
-//
-//                        for (Food item : foodList) {
-//                            if (item.getCategory().getName().equalsIgnoreCase(selectedCategory)) {
-//                                tempFoodList.add(item);
-//                            }
-//                        }
-//                        adapterListFood.notifyDataSetChanged();
-                    }
+                tempFoodList.clear();
+                Category category = categoryListLabel.get(position);
+                Toast.makeText(getContext(), "" + category.getName(), Toast.LENGTH_SHORT).show();
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {
-
+                for(int i = 0;i<foodList.size();i++) {
+                    Food food = foodList.get(i);
+                    if (food.getCategory().getName().equals(category.getName()) || category.getName().equals("Tất cả")) {
+                        tempFoodList.add(foodList.get(i));
                     }
-                });
+                }
+
+                adapterListFood.notifyDataSetChanged();
             }
 
             @Override
@@ -132,6 +124,8 @@ public class FragmentListFood extends Fragment {
 
             }
         });
+
+
 
 
     }
@@ -144,12 +138,16 @@ public class FragmentListFood extends Fragment {
         recyclerView = mView.findViewById(R.id.rv_fragment_list_food);
         imgBack = mView.findViewById(R.id.ic_back_fragment_list_food);
 
+        tempFoodList = new ArrayList<>();
+//        foodList = new ArrayList<>();
+
+        categoryListLabel = new ArrayList<>();
         categoryList = (List<Category>) getArguments().get("category_list");
         foodList = (List<Food>) getArguments().get("food_list");
-        tempFoodList = foodList;
 
 
-        spinnerAdapter = new AdapterSpinner(getActivity(), R.layout.item_spinner_dropdown, categoryList);
+
+        spinnerAdapter = new AdapterSpinner(getContext(), R.layout.item_spinner_dropdown, categoryListLabel);
         spinnerFoodType.setAdapter(spinnerAdapter);
 
         adapterListFood = new AdapterListFood(getContext(), tempFoodList);
@@ -177,8 +175,20 @@ public class FragmentListFood extends Fragment {
     }
 
     public void notifyDataLoaded() {
+        categoryListLabel.clear();
+        categoryListLabel.add(new Category("0", "Tất cả", 0));
+        categoryListLabel.addAll(categoryList);
+
+        tempFoodList.addAll(foodList);
+
         spinnerAdapter.notifyDataSetChanged();
         adapterListFood.notifyDataSetChanged();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        notifyDataLoaded();
+    }
 }

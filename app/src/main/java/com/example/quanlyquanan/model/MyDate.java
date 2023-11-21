@@ -32,4 +32,9 @@ public class MyDate {
     public void setYear(String year) {
         this.year = year;
     }
+
+    @Override
+    public String toString() {
+        return month.length() == 1 ? "0" + month + "/" + year : "" + month + "/" + year;
+    }
 }

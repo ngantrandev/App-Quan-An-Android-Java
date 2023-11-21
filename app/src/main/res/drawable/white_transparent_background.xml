@@ -4,7 +4,7 @@
     <!-- Hình chữ nhật trắng đục -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#80FFFFFF"/> <!-- #80 là độ trong suốt -->
+            <solid android:color="#41FFFFFF"/>
         </shape>
     </item>
 

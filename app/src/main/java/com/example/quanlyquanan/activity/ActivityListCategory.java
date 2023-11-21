@@ -2,6 +2,7 @@ package com.example.quanlyquanan.activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.adapter.AdapterListCategory;
+import com.example.quanlyquanan.adapter.AdapterSpinner;
 import com.example.quanlyquanan.api.ApiError;
 import com.example.quanlyquanan.api.CategoryApi;
 import com.example.quanlyquanan.model.Category;
@@ -45,10 +48,13 @@ import retrofit2.Response;
 public class ActivityListCategory extends AppCompatActivity {
     private RecyclerView recyclerView;
     AdapterListCategory adapterListCategory;
-    List<Category> categoryList;
-
+    List<Category> categoryList, categoryListTemp, categoryLabel;
+    AdapterSpinner adapterSpinner;
+    Spinner spinner;
     ImageButton btnAddCategory;
     ImageView imgBack;
+
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,52 @@ public class ActivityListCategory extends AppCompatActivity {
             public void onClick(View v) {
                 ActivityListCategory.this.finish();
 
+            }
+        });
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                categoryListTemp.clear();
+                Category spinnerLabel = categoryLabel.get(position);
+
+                for (int i = 0; i < categoryList.size(); i++) {
+                    Category category = categoryList.get(i);
+
+                    if (spinnerLabel.getName().equals(category.getName()) || spinnerLabel.getName().equals("Tất cả")) {
+                        categoryListTemp.add(category);
+                    }
+
+                    adapterListCategory.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                categoryListTemp.clear();
+                for(int i = 0;i<categoryList.size();i++) {
+                    Category category = categoryList.get(i);
+
+                    if(category.getName().contains(newText)) {
+                        categoryListTemp.add(category);
+
+                    }
+                }
+
+                adapterListCategory.notifyDataSetChanged();
+                return false;
             }
         });
     }
@@ -100,7 +152,7 @@ public class ActivityListCategory extends AppCompatActivity {
                         alertDialog.dismiss();
 //                        bottomSheetDialog.dismiss();
 
-                        createCategory(bottomSheetDialog,edtName.getText().toString().trim());
+                        createCategory(bottomSheetDialog, edtName.getText().toString().trim());
 
                     }
                 });
@@ -122,7 +174,7 @@ public class ActivityListCategory extends AppCompatActivity {
 
     }
 
-    private void createCategory(BottomSheetDialog bottomSheetDialog ,String newCategoryName) {
+    private void createCategory(BottomSheetDialog bottomSheetDialog, String newCategoryName) {
         CategoryApi.categoryApi.createCategory(newCategoryName).enqueue(new Callback<ResponseCategoryById>() {
             @Override
             public void onResponse(Call<ResponseCategoryById> call, Response<ResponseCategoryById> response) {
@@ -150,11 +202,18 @@ public class ActivityListCategory extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view_activity_listcategory);
         btnAddCategory = findViewById(R.id.btn_add_category_activity_listcategory);
         imgBack = findViewById(R.id.ic_back_activity_list_category);
+        searchView = findViewById(R.id.sv_activity_listcategory);
 
 
         categoryList = new ArrayList<>();
+        categoryListTemp = new ArrayList<>();
+        categoryLabel = new ArrayList<>();
 
-        adapterListCategory = new AdapterListCategory(this, categoryList);
+        spinner = findViewById(R.id.sp_activity_listcategory);
+        adapterSpinner = new AdapterSpinner(this, R.layout.item_spinner_dropdown, categoryLabel);
+        spinner.setAdapter(adapterSpinner);
+
+        adapterListCategory = new AdapterListCategory(this, categoryListTemp);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapterListCategory);
@@ -172,10 +231,17 @@ public class ActivityListCategory extends AppCompatActivity {
                     if (response.body().getStatus().equals("Success")) {
                         categoryList.clear();
                         categoryList.addAll(response.body().getCategoryList());
+                        categoryListTemp.addAll(categoryList);
+
+
+                        categoryLabel.add(new Category("0", "Tất cả", 0)); // phan tu dau cua spinner
+                        categoryLabel.addAll(categoryList);
 
                         Log.d("MYMY", "onResponse: " + categoryList.size());
 
                         adapterListCategory.notifyDataSetChanged();
+                        adapterSpinner.notifyDataSetChanged();
+
                     }
                 } else {
                     showErrorResponse(response);

@@ -23,7 +23,7 @@ public interface BillApi {
     Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd HH:mm:ss")
             .create();
-    BillApi foodApi = new Retrofit.Builder()
+    BillApi billApi = new Retrofit.Builder()
             .baseUrl(MyApplication.BASE_API_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
@@ -37,7 +37,6 @@ public interface BillApi {
 
     @GET("/bills/date")
     Call<ResponseBill> getBillByDate(
-            @Query("day") String day,
             @Query("month") String month,
             @Query("year") String year
     );

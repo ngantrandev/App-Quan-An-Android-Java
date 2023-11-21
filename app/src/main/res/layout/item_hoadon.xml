@@ -68,11 +68,11 @@
             app:layout_constraintVertical_bias="0.483" />
 
         <TextView
-            android:id="@+id/tv_tongdoanhthu_item_doanhthu"
+            android:id="@+id/tv_tonghoadon_item_hoadon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="120"
+            android:text="---.---.---"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/textView42"
             app:layout_constraintEnd_toStartOf="@+id/textView42"
@@ -121,23 +121,23 @@
         app:layout_constraintTop_toTopOf="@+id/textView29" />
 
     <TextView
-        android:id="@+id/tv_tienmonan_item_doanhthu"
+        android:id="@+id/tv_dathanhtoan_item_hoadon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="115"
+        android:text="---.---.---"
         app:layout_constraintBottom_toBottomOf="@+id/textView31"
         app:layout_constraintEnd_toStartOf="@+id/textView31"
         app:layout_constraintTop_toTopOf="@+id/textView31"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/tv_tiendichvu_item_doanhthu"
+        android:id="@+id/tv_chuathanhtoan_item_hoadon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5"
+        android:text="---.---.---"
         app:layout_constraintBottom_toBottomOf="@+id/textView32"
-        app:layout_constraintEnd_toEndOf="@+id/tv_tienmonan_item_doanhthu"
+        app:layout_constraintEnd_toEndOf="@+id/tv_dathanhtoan_item_hoadon"
         app:layout_constraintTop_toTopOf="@+id/textView32" />
 
     <TextView
@@ -159,12 +159,12 @@
         app:layout_constraintTop_toTopOf="@+id/textView34" />
 
     <TextView
-        android:id="@+id/textView36"
+        android:id="@+id/tv_phantram_itemhoadon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4"
+        android:text="---.---.---"
         app:layout_constraintBottom_toBottomOf="@+id/textView35"
-        app:layout_constraintEnd_toEndOf="@+id/tv_tiendichvu_item_doanhthu"
+        app:layout_constraintEnd_toEndOf="@+id/tv_chuathanhtoan_item_hoadon"
         app:layout_constraintTop_toTopOf="@+id/textView35"
         app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

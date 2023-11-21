@@ -23,6 +23,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="34">
         <activity
+            android:name=".activity.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ActivitySignIn"
+            android:exported="false" />
+        <activity
             android:name=".activity.ActivityChart"
             android:exported="false" />
         <activity
@@ -35,7 +41,7 @@
             android:name=".activity.ActivityListFood"
             android:exported="true" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.StartActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
