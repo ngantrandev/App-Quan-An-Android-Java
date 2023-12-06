@@ -213,7 +213,8 @@ public class FragmentCreateFood extends Fragment {
     private void postNewFood() {
         String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);;
         File  file = new File(realPathImage);;
-        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse(requireActivity().getContentResolver().getType(mUri)), file);
         MultipartBody.Part  multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
 
 
@@ -351,7 +352,9 @@ public class FragmentCreateFood extends Fragment {
 
             @Override
             public void onFailure(Call<ResponseFoodById> call, Throwable t) {
-                Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), t.toString(), Toast.LENGTH_LONG).show();
+                Log.d("TAG", "" + t.toString());
             }
         });
     }

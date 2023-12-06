@@ -1,20 +1,11 @@
 package com.example.quanlyquanan.model;
 
 public class MyDate {
-    private String day, month, year;
+    private String month, year;
 
-    public MyDate(String day, String month, String year) {
-        this.day = day;
+    public MyDate(String month, String year) {
         this.month = month;
         this.year = year;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String day) {
-        this.day = day;
     }
 
     public String getMonth() {

@@ -16,9 +16,9 @@ import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.adapter.AdapterSpinnerDate;
 import com.example.quanlyquanan.api.ApiError;
 import com.example.quanlyquanan.api.BillApi;
-import com.example.quanlyquanan.model.Bill;
+import com.example.quanlyquanan.model.DayAmount;
 import com.example.quanlyquanan.model.MyDate;
-import com.example.quanlyquanan.response.ResponseBill;
+import com.example.quanlyquanan.response.ResponseAmount;
 import com.example.quanlyquanan.setting.MyApplication;
 import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -38,6 +38,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,122 +58,104 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
     private List<MyDate> listMonth = new ArrayList<>(); // su dung cho spinner
     private AdapterSpinnerDate adapterCurrTimeSpinner, adapterTargetTimeSpinner;
     private Spinner currTimeSpinner, targetTimeSpinner;
-
     TextView tvTongLoiNhuan, tvTongDoanhThu, tvTongChiPhi, tvTienMonAn, tvTienDichVu, tvTienNguyenLieu, tvTienMatBang, tvLuongNhanVien, tvSoBillThanhToan, tvSoBillChuaThanhToan, tvTiLeThanhToan, tvtongbill;
-    private List<Bill> mListBillCurrMonth;
-    private List<Bill> mListBillTargetrMonth;
-    private int mBillUnpaid;
-    private List<String> xLabels;
+    private List<DayAmount> mListBillCurrMonth;
+    private List<DayAmount> mListBillTargetrMonth;
     private YAxis rightAxis, leftAxis;
     private CombinedData chartData;
     private LineData lineDatas;
     private XAxis xAxis;
-    private int mDaysOfMonth;
-    private boolean isListBillLoaded = false, isListBillInfoLoaded = false;
-    public static int tienMonAn = 0;
-    private static int hoadonchuathanhtoan = 0;
+    private int mDaysOfMonth = 30;
+    public static int tienMonAn = 0, tienDichVu = 0, hoadonchuathanhtoan = 0, hoadondathanhtoan = 0;
+
+    public int mcurrMonth = 12, mcurrYear = 2022;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
 
+        loadCurrTime();
+
         setControl();
         setEvent();
 
-// Lấy thời gian hiện tại
-        Calendar calendar = Calendar.getInstance();
-        Date currentDate = calendar.getTime();
+        setTimeSpinnerCurrTime();
 
-        // Định dạng thời gian
-        SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.getDefault());
-        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
-
-        // Lấy tháng và năm từ thời gian hiện tại
-        int currentMonth = Integer.parseInt(monthFormat.format(currentDate));
-        int currentYear = Integer.parseInt(yearFormat.format(currentDate));
-
-        loadBillDataMonth(mListBillCurrMonth, currentMonth, currentYear); // khởi tạo  data cho thang hien tai
+        loadBillDataMonth(mListBillCurrMonth, mcurrMonth, mcurrYear); // khởi tạo  data cho thang hien tai
     }
 
-    private void loadBillDataMonth(List<Bill> listBill, int month, int year) {
+    private void loadBillDataMonth(List<DayAmount> listBill, int month, int year) {
         BillApi.billApi.getBillByDate(String.valueOf(month), String.valueOf(year))
-                .enqueue(new Callback<ResponseBill>() {
+                .enqueue(new Callback<ResponseAmount>() {
                     @Override
-                    public void onResponse(Call<ResponseBill> call, Response<ResponseBill> response) {
+                    public void onResponse(Call<ResponseAmount> call, Response<ResponseAmount> response) {
                         if (response.isSuccessful()) {
                             if (response.body().getStatus().equals("Success")) {
-                                Toast.makeText(ActivityChart.this, "Thanh cong", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityChart.this, MyApplication.MESSAGE_LOAD_DATA_SUCCESSFUL, Toast.LENGTH_SHORT).show();
                                 listBill.clear();
-                                listBill.addAll(response.body().getBillList());
-
+                                listBill.addAll(response.body().getListBillAmount());
+                                Log.d("MYMY", "load bill list ");
                                 notifyMonthDataLoaded();
                             }
                         } else {
                             showErrorResponse(response);
                         }
+
                     }
 
                     @Override
-                    public void onFailure(Call<ResponseBill> call, Throwable t) {
+                    public void onFailure(Call<ResponseAmount> call, Throwable t) {
                         showFailedResponse();
                     }
                 });
     }
 
     private void notifyMonthDataLoaded() {
-//        initFirstChartView();
         lineDatas.clearValues();
-        lineDatas.addDataSet((ILineDataSet) dataChart(mListBillCurrMonth, "Lợi nhuận tháng này", Color.GREEN));
-//        lineDatas.addDataSet((ILineDataSet) dataChart(mListBillTargetrMonth, "Lợi nhuận tháng so ", Color.RED));
+        mChart.notifyDataSetChanged();
+        mChart.clear();
+        mChart.invalidate();
+
+        lineDatas.addDataSet((ILineDataSet) dataChart(mListBillCurrMonth, "Doanh thu tháng này", Color.parseColor("Blue"), true));
+        lineDatas.addDataSet((ILineDataSet) dataChart(mListBillTargetrMonth, "Doanh thu tháng so sánh", Color.RED, false));
         chartData.setData(lineDatas);
         xAxis.setAxisMaximum(chartData.getXMax() + 0.25f);
         mChart.setData(chartData);
         mChart.invalidate();
 
-        tinhLoiNhuan();
+        showLoiNhuan();
     }
 
-    private void tinhLoiNhuan() {
-        int tiendichvu = (int) (tienMonAn * 0.1);
-        int tongDoanhThu = tiendichvu + tienMonAn;
-        int tiennguyenlieu = (int) (tienMonAn * 0.3);
+    private void showLoiNhuan() {
+        int tongDoanhThu = tienDichVu + tienMonAn;
+        int tiennguyenlieu = (int) (tienMonAn * 0.8);
         int luongnv = 1000000;
         int tienmatbang = 1000000;
         int tongchiphi = luongnv + tiennguyenlieu + tienmatbang;
-        int hoadondathanhtoan = mListBillCurrMonth.size() - hoadonchuathanhtoan;
         int loinhuan = tongDoanhThu - tongchiphi;
+        int tongBill = hoadondathanhtoan + hoadonchuathanhtoan;
 
-        tvTongDoanhThu.setText(String.valueOf(tongDoanhThu));
-        tvTienMonAn.setText(String.valueOf(tienMonAn));
-        tvTienDichVu.setText(String.valueOf(tiendichvu));
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(',');
+        // Tạo đối tượng DecimalFormat
+        DecimalFormat decimalFormat = new DecimalFormat("###,###", symbols);
 
-        tvLuongNhanVien.setText(String.valueOf(luongnv));
-        tvTienNguyenLieu.setText(String.valueOf(tiennguyenlieu));
-        tvTienMatBang.setText(String.valueOf(tienmatbang));
-        tvTongChiPhi.setText(String.valueOf(tongchiphi));
-////
-        tvSoBillChuaThanhToan.setText(String.valueOf(hoadonchuathanhtoan));
-        tvSoBillThanhToan.setText(String.valueOf(hoadondathanhtoan));
-        tvTiLeThanhToan.setText(String.valueOf(Math.floor((float)hoadondathanhtoan / mListBillCurrMonth.size())));
-        tvtongbill.setText(String.valueOf(mListBillCurrMonth.size()));
-        tvTongLoiNhuan.setText(String.valueOf(loinhuan));
+        tvTongDoanhThu.setText(decimalFormat.format(tongDoanhThu));
+        tvTienMonAn.setText(decimalFormat.format(tienMonAn));
+        tvTienDichVu.setText(decimalFormat.format(tienDichVu));
 
+        tvLuongNhanVien.setText(decimalFormat.format(luongnv));
+        tvTienNguyenLieu.setText(decimalFormat.format(tiennguyenlieu));
+        tvTienMatBang.setText(decimalFormat.format(tienmatbang));
+        tvTongChiPhi.setText(decimalFormat.format(tongchiphi));
 
-
-
-
+        tvSoBillChuaThanhToan.setText(decimalFormat.format(hoadonchuathanhtoan));
+        tvSoBillThanhToan.setText(decimalFormat.format(hoadondathanhtoan));
+        tvTiLeThanhToan.setText("" + Math.round(((float) hoadondathanhtoan / tongBill) * 100));
+        tvtongbill.setText(decimalFormat.format(tongBill));
+        tvTongLoiNhuan.setText(decimalFormat.format(loinhuan));
     }
-
-    private void notifyTargetMonthDataLoaded() {
-
-    }
-
-//    private void initFirstChartView() {
-//        if (isListBillInfoLoaded && isListBillLoaded) {
-//
-//        }
-//    }
 
     private void setEvent() {
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +169,7 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 MyDate myDate = listMonth.get(position);
-
+                Log.d("MYMY", "onItemSelected: ");
                 loadBillDataMonth(mListBillCurrMonth, Integer.parseInt(myDate.getMonth()), Integer.parseInt(myDate.getYear()));
             }
 
@@ -198,9 +182,15 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         targetTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                MyDate myDate = listMonth.get(position);
+                if(position == currTimeSpinner.getSelectedItemPosition()) {
+                    Toast.makeText(getApplicationContext(), "Trùng với tháng hiện tại", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    MyDate myDate = listMonth.get(position);
 
-                loadBillDataMonth(mListBillTargetrMonth, Integer.parseInt(myDate.getMonth()), Integer.parseInt(myDate.getYear()));
+                    Log.d("MYMY", "onItemSelected target: ");
+                    loadBillDataMonth(mListBillTargetrMonth, Integer.parseInt(myDate.getMonth()), Integer.parseInt(myDate.getYear()));
+                }
             }
 
             @Override
@@ -212,11 +202,16 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
 
     private void setControl() {
         initSpinnerData();
+
         Calendar calendar = Calendar.getInstance();
-        mDaysOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        mDaysOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        Log.d("MYMY", "" + mDaysOfMonth);
+
 
         currTimeSpinner = findViewById(R.id.sp_curr_month_activity_thongke);
         targetTimeSpinner = findViewById(R.id.sp_target_month_activity_thongke);
+        currTimeSpinner.setSelection(0, false);
+        targetTimeSpinner.setSelection(0, false);
         btnBack = findViewById(R.id.ic_back_activity_chart);
         tvTongLoiNhuan = findViewById(R.id.tv_tongloinhuan_activity_thongke);
         tvTongDoanhThu = findViewById(R.id.tv_doanhthu_item_doanhthu);
@@ -239,13 +234,12 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
 
         mListBillCurrMonth = new ArrayList<>();
         mListBillTargetrMonth = new ArrayList<>();
-        xLabels = new ArrayList<>();
 
         mChart = findViewById(R.id.combined_chart_activity_thongke);
         mChart.getDescription().setEnabled(false);
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
-        mChart.setDrawBarShadow(false);
+        mChart.setDrawBarShadow(true);
         mChart.setHighlightFullBarEnabled(false);
         mChart.setOnChartValueSelectedListener(this);
 
@@ -285,103 +279,81 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
     }
 
     private void initSpinnerData() {
-        for (int i = 2023; i <= 2023; i++) {
+        for (int i = mcurrYear; i <= mcurrYear; i++) {
             for (int j = 1; j <= 12; j++) {
                 // khong can quan tam toi ngay
-                listMonth.add(new MyDate("dontcare", String.valueOf(j), String.valueOf(i)));
+                listMonth.add(new MyDate(String.valueOf(j), String.valueOf(i)));
             }
         }
     }
 
-
-    @Override
-    public void onValueSelected(Entry e, Highlight h) {
-        Toast.makeText(this, "Value: "
-                + e.getY()
-                + ", index: "
-                + h.getX()
-                + ", DataSet index: "
-                + h.getDataSetIndex(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected() {
-
-    }
-
-    private static DataSet dataChart(List<Bill> billList, String label, int color) {
+    private static DataSet dataChart(List<DayAmount> billList, String label, int color, boolean isCurrBillListMonth) {
 
         LineData d = new LineData();
-        int[] data = new int[31];
-        tienMonAn = 0;
-        hoadonchuathanhtoan = 0;
+        int[] data = new int[32]; // 31 la so ngay toi da cua mot thang
+        if (isCurrBillListMonth) {
+            tienMonAn = 0;
+            tienDichVu = 0;
+            hoadonchuathanhtoan = 0;
+            hoadondathanhtoan = 0;
+        }
 
 
         for (int i = 0; i < billList.size(); i++) {
-            Bill bill = billList.get(i);
+            DayAmount dayAmount = billList.get(i);
 
-            // Chuyển đổi thời gian từ millisecond sang Calendar
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(Long.parseLong(bill.getTimeCheckIn()));
+            int day = dayAmount.getDate();
+            int totalFoodAmount = dayAmount.getTotalFoodAmount();
+            int totalTip = dayAmount.getTotalTips();
 
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int tips = bill.getTips();
-            Log.d("MYMY", "tip: "+tips);
-            tienMonAn += tips;
-            Log.d("MYMY", "tien an " + tienMonAn);
 
-            if (bill.getStatus() == 0) {
-                hoadonchuathanhtoan += 1;
+            if (isCurrBillListMonth) {
+                tienMonAn += totalFoodAmount;
+                tienDichVu += totalTip;
+                hoadonchuathanhtoan += dayAmount.getChuathanhtoan();
+                hoadondathanhtoan += dayAmount.getDathanhtoan();
             }
 
             // Thêm tips vào tổng của ngày đó
-            data[day - 1] += tips;
+            data[day - 1] = totalFoodAmount + totalTip;
         }
 
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for (int index = 0; index < 31; index++) {
-            entries.add(new Entry(index, data[index]));
+        for (int index = 0; index <= 31; index++) {
+            int value = data[index];
+            if (value > 0) // loai bo du lieu bang 0
+                entries.add(new Entry(index, value));
+        }
+
+        // neu entries rong
+        // add 1 entry default
+        // vi linedataset yeu cau entries khong duoc rong
+        if (entries.size() == 0) {
+            entries.add(new Entry(0, 0));
         }
 
         LineDataSet set = new LineDataSet(entries, label);
         set.setColor(color);
-        set.setLineWidth(2.5f);
-//        set.setCircleColor(color);
+        set.setLineWidth(1.5f);
+        set.setCircleColor(Color.parseColor("PURPLE"));
 //        set.setCircleRadius(0);
 //        set.setFillColor(color);
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        set.setDrawValues(true);
-        set.setValueTextSize(10f);
-        set.setValueTextColor(color);
-
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        d.addDataSet(set);
-
-        return set;
-    }
-
-    private static DataSet newDataChart() {
-
-        LineData d = new LineData();
-        int[] data = new int[]{7, 7, 7, 8, 9, 9, 7, 8, 7, 8, 7, 9};
-
-        ArrayList<Entry> entries = new ArrayList<Entry>();
-
-        for (int index = 0; index < 12; index++) {
-            entries.add(new Entry(index, data[index]));
+        if(isCurrBillListMonth) {
+            set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        } else {
+            set.setMode(LineDataSet.Mode.LINEAR);
         }
 
-        LineDataSet set = new LineDataSet(entries, "Lợi nhuận tháng trước");
-        set.setColor(Color.RED);
-        set.setLineWidth(2.5f);
-        set.setCircleColor(Color.RED);
-        set.setCircleRadius(5f);
-        set.setFillColor(Color.RED);
-        set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        set.setDrawValues(true);
+        if (entries.size() == 1 && entries.get(0).getY() == 0) { // truong hop entries chi chua data default
+            set.setDrawCircles(false);
+            set.setDrawValues(false);
+        } else {
+            set.setDrawValues(true);
+        }
+
         set.setValueTextSize(10f);
-        set.setValueTextColor(Color.RED);
+        set.setValueTextColor(color);
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         d.addDataSet(set);
@@ -408,15 +380,19 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         Toast.makeText(this, MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setDefaultSpinner();
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        setDefaultSpinner();
+//        notifyMonthDataLoaded();
+//    }
+
+    private void setTimeSpinnerCurrTime() {
+        currTimeSpinner.setSelection(mcurrMonth - 1); // thang bat dau tu 0
         notifyMonthDataLoaded();
     }
 
-    private void setDefaultSpinner() {
-
+    private void loadCurrTime() {
         Calendar calendar = Calendar.getInstance();
         Date currentDate = calendar.getTime();
 
@@ -424,13 +400,28 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         SimpleDateFormat monthFormat = new SimpleDateFormat("MM", Locale.getDefault());
         SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
 
-        // Lấy tháng và năm từ thời gian hiện tại
-        int currentMonth = Integer.parseInt(monthFormat.format(currentDate));
-        int currentYear = Integer.parseInt(yearFormat.format(currentDate));
+        try {
+            // Lấy tháng và năm từ thời gian hiện tại
+            mcurrMonth = Integer.parseInt(monthFormat.format(currentDate));
+            mcurrYear = Integer.parseInt(yearFormat.format(currentDate));
+        } catch (Exception e) {
+            Log.d("MYMY", "exception: " + e.toString());
+        }
+    }
 
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+//        Toast.makeText(this, "Value: "
+//                + e.getY()
+//                + ", index: "
+//                + h.getX()
+//                + ", DataSet index: "
+//                + h.getDataSetIndex(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Ngày " + (int) h.getX(), Toast.LENGTH_SHORT).show();
+    }
 
-        currTimeSpinner.setSelection(currentMonth - 1); // thang bat dau tu 0
-        notifyMonthDataLoaded();
+    @Override
+    public void onNothingSelected() {
 
     }
 }

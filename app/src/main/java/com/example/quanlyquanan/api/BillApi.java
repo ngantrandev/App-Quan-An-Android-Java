@@ -1,6 +1,7 @@
 package com.example.quanlyquanan.api;
 
 import com.example.quanlyquanan.model.MyDate;
+import com.example.quanlyquanan.response.ResponseAmount;
 import com.example.quanlyquanan.response.ResponseBill;
 import com.example.quanlyquanan.response.ResponseBillById;
 import com.example.quanlyquanan.response.ResponseBillInfoById;
@@ -36,7 +37,7 @@ public interface BillApi {
     Call<ResponseBillById> getBillById(@Path("id") String id);
 
     @GET("/bills/date")
-    Call<ResponseBill> getBillByDate(
+    Call<ResponseAmount> getBillByDate(
             @Query("month") String month,
             @Query("year") String year
     );

@@ -65,7 +65,7 @@
                     android:layout_marginEnd="8dp"
                     android:gravity="center"
                     android:text="Tháng"
-                    android:textColor="@color/black"
+                    android:textColor="#ffffff"
                     android:textStyle="bold" />
 
                 <Spinner
@@ -146,7 +146,7 @@
                     android:layout_toStartOf="@id/sp_target_month_activity_thongke"
                     android:gravity="center"
                     android:text="So với"
-                    android:textColor="@color/black"
+                    android:textColor="#FFFFFF"
                     android:textStyle="bold" />
 
                 <Spinner
