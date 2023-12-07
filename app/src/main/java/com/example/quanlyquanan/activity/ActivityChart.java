@@ -69,6 +69,7 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
     public static int tienMonAn = 0, tienDichVu = 0, hoadonchuathanhtoan = 0, hoadondathanhtoan = 0;
 
     public int mcurrMonth = 12, mcurrYear = 2022;
+    private boolean isUserInteracted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +169,11 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         currTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // tranh goi onItemSelected luc khoi tao
+                if(isUserInteracted == false) {
+                    return;
+                }
+
                 MyDate myDate = listMonth.get(position);
                 Log.d("MYMY", "onItemSelected: ");
                 loadBillDataMonth(mListBillCurrMonth, Integer.parseInt(myDate.getMonth()), Integer.parseInt(myDate.getYear()));
@@ -182,6 +188,11 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         targetTimeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // tranh goi onItemSelected luc khoi tao
+                if(isUserInteracted == false) {
+                    return;
+                }
+
                 if(position == currTimeSpinner.getSelectedItemPosition()) {
                     Toast.makeText(getApplicationContext(), "Trùng với tháng hiện tại", Toast.LENGTH_SHORT).show();
                 }
@@ -198,6 +209,9 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
 
             }
         });
+
+        currTimeSpinner.setSelection(0,false);
+        targetTimeSpinner.setSelection(0,false);
     }
 
     private void setControl() {
@@ -205,8 +219,6 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
 
         Calendar calendar = Calendar.getInstance();
         mDaysOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        Log.d("MYMY", "" + mDaysOfMonth);
-
 
         currTimeSpinner = findViewById(R.id.sp_curr_month_activity_thongke);
         targetTimeSpinner = findViewById(R.id.sp_target_month_activity_thongke);
@@ -287,27 +299,26 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         }
     }
 
-    private static DataSet dataChart(List<DayAmount> billList, String label, int color, boolean isCurrBillListMonth) {
+    private static DataSet dataChart(List<DayAmount> listBillAmount, String label, int color, boolean isCurrMonth) {
 
         LineData d = new LineData();
         int[] data = new int[32]; // 31 la so ngay toi da cua mot thang
-        if (isCurrBillListMonth) {
+        if (isCurrMonth) {
             tienMonAn = 0;
             tienDichVu = 0;
             hoadonchuathanhtoan = 0;
             hoadondathanhtoan = 0;
         }
 
-
-        for (int i = 0; i < billList.size(); i++) {
-            DayAmount dayAmount = billList.get(i);
+        for (int i = 0; i < listBillAmount.size(); i++) {
+            DayAmount dayAmount = listBillAmount.get(i);
 
             int day = dayAmount.getDate();
             int totalFoodAmount = dayAmount.getTotalFoodAmount();
             int totalTip = dayAmount.getTotalTips();
 
 
-            if (isCurrBillListMonth) {
+            if (isCurrMonth) {
                 tienMonAn += totalFoodAmount;
                 tienDichVu += totalTip;
                 hoadonchuathanhtoan += dayAmount.getChuathanhtoan();
@@ -315,12 +326,12 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
             }
 
             // Thêm tips vào tổng của ngày đó
-            data[day - 1] = totalFoodAmount + totalTip;
+            data[day] = totalFoodAmount + totalTip;
         }
 
         ArrayList<Entry> entries = new ArrayList<Entry>();
 
-        for (int index = 0; index <= 31; index++) {
+        for (int index = 1; index <= 31; index++) {
             int value = data[index];
             if (value > 0) // loai bo du lieu bang 0
                 entries.add(new Entry(index, value));
@@ -339,7 +350,7 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
         set.setCircleColor(Color.parseColor("PURPLE"));
 //        set.setCircleRadius(0);
 //        set.setFillColor(color);
-        if(isCurrBillListMonth) {
+        if(isCurrMonth) {
             set.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         } else {
             set.setMode(LineDataSet.Mode.LINEAR);
@@ -423,5 +434,11 @@ public class ActivityChart extends AppCompatActivity implements OnChartValueSele
     @Override
     public void onNothingSelected() {
 
+    }
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        isUserInteracted = true;
     }
 }

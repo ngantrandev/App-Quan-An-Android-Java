@@ -112,6 +112,8 @@ public class ActivityListCategory extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                // add category contain text in searchView
                 categoryListTemp.clear();
                 for(int i = 0;i<categoryList.size();i++) {
                     Category category = categoryList.get(i);
@@ -182,7 +184,10 @@ public class ActivityListCategory extends AppCompatActivity {
                     if (response.body().getStatus().equals("Success")) {
                         bottomSheetDialog.dismiss();
                         Category newCategory = response.body().getCategory();
+
                         categoryList.add(newCategory);
+                        notifyCategoryListChanged();
+
                         Toast.makeText(ActivityListCategory.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 } else {
@@ -231,17 +236,13 @@ public class ActivityListCategory extends AppCompatActivity {
                     if (response.body().getStatus().equals("Success")) {
                         categoryList.clear();
                         categoryList.addAll(response.body().getCategoryList());
-                        categoryListTemp.addAll(categoryList);
-
 
                         categoryLabel.add(new Category("0", "Tất cả", 0)); // phan tu dau cua spinner
                         categoryLabel.addAll(categoryList);
 
-                        Log.d("MYMY", "onResponse: " + categoryList.size());
-
-                        adapterListCategory.notifyDataSetChanged();
                         adapterSpinner.notifyDataSetChanged();
 
+                        notifyCategoryListChanged();
                     }
                 } else {
                     showErrorResponse(response);
@@ -253,6 +254,12 @@ public class ActivityListCategory extends AppCompatActivity {
                 showFailedResponse();
             }
         });
+    }
+
+    private void notifyCategoryListChanged() {
+        categoryListTemp.clear();
+        categoryListTemp.addAll(categoryList);
+        adapterListCategory.notifyDataSetChanged();
     }
 
     private void showErrorResponse(Response<?> response) {
