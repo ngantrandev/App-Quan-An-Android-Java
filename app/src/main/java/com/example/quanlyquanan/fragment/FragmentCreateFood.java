@@ -13,13 +13,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +66,6 @@ import retrofit2.Response;
 
 public class FragmentCreateFood extends Fragment {
     private static final int REQUEST_CODE_READ_EXTERNAL_STOREAGE = 100;
-    private int REQUEST_CODE_CHOOSE_FILE = 101;
     private View mView;
     EditText edtFoodName, edtSoLuong, edtNote, edtPrice;
     ImageView foodImage;
@@ -121,7 +124,7 @@ public class FragmentCreateFood extends Fragment {
         categoryList = (List<Category>) getArguments().get("category_list");
         foodList = (List<Food>) getArguments().get("food_list");
 
-        permission = new Permission((AppCompatActivity) requireActivity());
+        permission = new Permission(this);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Vui lòng đợi");
@@ -139,7 +142,6 @@ public class FragmentCreateFood extends Fragment {
                 } else {
                     Toast.makeText(getContext(), "Vui lòng chọn ảnh", Toast.LENGTH_LONG).show();
                 }
-//                postNewFood();
             }
         });
 
@@ -153,35 +155,58 @@ public class FragmentCreateFood extends Fragment {
         foodImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseImageForFood();
+
+                Log.d("CHECKPERMISSION", "onClick: ");
+                if (!permission.isPermissionPickFileAccepted()) {
+                    Log.d("CHECKPERMISSION", "click button : chua cap quyen");
+                    permission.requestRuntimePermission();
+
+                } else {
+                    Log.d("CHECKPERMISSION", "click button : da cap quyen");
+                    openGallery();
+                }
             }
         });
-    }
-
-    private void chooseImageForFood() {
-        AppCompatActivity activity = (AppCompatActivity) requireActivity(); // anh xa activity
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            openGallery();
-            return;
-        }
-
-        if (activity.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            openGallery();
-        } else {
-            String[] permission = {Manifest.permission.READ_EXTERNAL_STORAGE};
-            activity.requestPermissions(permission, REQUEST_CODE_READ_EXTERNAL_STOREAGE);
-        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        Log.d("MYMY", "onRequestPermissionsResult: " + requestCode);
-        if (requestCode == REQUEST_CODE_READ_EXTERNAL_STOREAGE) {
+        AppCompatActivity activity = (AppCompatActivity) requireActivity();
+        if (requestCode == MyApplication.PERMISSION_REQ_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
+                Log.d("CHECKPERMISSION", "onRequestPermissionsResult: " + "if");
+            } else if (!ActivityCompat.shouldShowRequestPermissionRationale(activity, MyApplication.PERMISSION_READ_EXTERNAL_STORAGE)) {
+                Log.d("CHECKPERMISSION", "onRequestPermissionsResult: " + "else if");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                builder.setMessage("Chức năng yêu cầu quyền truy cập thư viện ảnh\\nHãy cấp quyền truy cập bộ nhớ!")
+                        .setTitle("Yêu cầu quyền truy cập bộ nhớ")
+                        .setCancelable(false)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+                                intent.setData(uri);
+                                activity.startActivity(intent);
+
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                builder.show();
+            } else {
+                Log.d("CHECKPERMISSION", "onRequestPermissionsResult: " + "else");
+                permission.requestRuntimePermission();
+
             }
         }
     }
@@ -190,7 +215,7 @@ public class FragmentCreateFood extends Fragment {
 
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Choose image"), REQUEST_CODE_CHOOSE_FILE);
+        startActivityForResult(Intent.createChooser(intent, "Choose image"), MyApplication.REQUEST_CODE_CHOOSE_FILE);
 //        registerForActivityResult();
     }
 
@@ -198,7 +223,7 @@ public class FragmentCreateFood extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_CHOOSE_FILE && resultCode == RESULT_OK) {
+        if (requestCode == MyApplication.REQUEST_CODE_CHOOSE_FILE && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
             mUri = selectedImage;
             try {
@@ -211,11 +236,11 @@ public class FragmentCreateFood extends Fragment {
     }
 
     private void postNewFood() {
-        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);;
-        File  file = new File(realPathImage);;
+        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);
+        File file = new File(realPathImage);
 //        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse(requireActivity().getContentResolver().getType(mUri)), file);
-        MultipartBody.Part  multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
+        RequestBody requestBodyImgFile = RequestBody.create(MediaType.parse(requireActivity().getContentResolver().getType(mUri)), file);
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
 
 
         if (mUri != null) {
@@ -251,17 +276,8 @@ public class FragmentCreateFood extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 alertDialog.dismiss();
-                Log.d("TAG", "onClick00000000000000000000000: "+mUri);
-                if (mUri == null) {
-                    uploadFoodWithoutImg(
-                            edtFoodName.getText().toString().trim(),
-                            edtPrice.getText().toString().trim(),
-                            edtNote.getText().toString().trim(),
-                            edtSoLuong.getText().toString().trim(),
-                            category.get_id()
-                    );
-
-                } else {
+                Log.d("TAG", "onClick00000000000000000000000: " + mUri);
+                if (mUri != null) {
                     uploadFoodWithImg(multipartBody,
                             edtFoodName.getText().toString().trim(),
                             edtPrice.getText().toString().trim(),
@@ -278,41 +294,6 @@ public class FragmentCreateFood extends Fragment {
             }
         });
         alertDialog.show();
-    }
-
-    private void uploadFoodWithoutImg(String name, String price, String note, String soluong, String categoryID) {
-        FoodApi.foodApi.postFoodWithoutFile(name, price, note, soluong, categoryID)
-                .enqueue(new Callback<ResponseFoodById>() {
-                    @Override
-                    public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body().getStatus().equals("Success")) {
-                                Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_CREATEFOOD_SUCCESS, Toast.LENGTH_LONG).show();
-                                ResponseFoodById responseFood = response.body();
-
-                                Food food = responseFood.getFood();
-                                foodList.add(food);
-
-                                // reset edittext
-                                edtFoodName.setText("");
-                                edtPrice.setText("0");
-                                edtSoLuong.setText("0");
-                                edtNote.setText("");
-                                foodImage.setImageResource(R.drawable.food_img_default);
-                            } else {
-                                Toast.makeText(getContext(), MyApplication.MESSAGE_TOAST_CREATEFOOD_FAILED, Toast.LENGTH_LONG).show();
-                            }
-
-                        } else {
-                            showErrorResponse(response);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseFoodById> call, Throwable t) {
-                        showFailedResponse();
-                    }
-                });
     }
 
     private void uploadFoodWithImg(MultipartBody.Part multipartBody, String name, String price, String note, String soLuong, String categoryId) {
@@ -366,27 +347,6 @@ public class FragmentCreateFood extends Fragment {
         spinnerCategory.setAdapter(arrayAdapterFoodType);
 
 //        loadCategoryList();
-    }
-
-
-    private void loadListFoodData() {
-        FoodApi.foodApi.getFoods().enqueue(new Callback<ResponseFood>() {
-            @Override
-            public void onResponse(Call<ResponseFood> call, Response<ResponseFood> response) {
-                if (response.isSuccessful()) {
-                    ResponseFood responseFood = response.body();
-                    foodList.clear();
-                    foodList.addAll(responseFood.getFoodList());
-                } else {
-                    showErrorResponse(response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseFood> call, Throwable t) {
-                showFailedResponse();
-            }
-        });
     }
 
     private void showErrorResponse(Response<?> response) {

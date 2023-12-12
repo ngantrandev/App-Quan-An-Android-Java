@@ -74,7 +74,7 @@ public class AdapterListFood extends RecyclerView.Adapter<AdapterListFood.ViewHo
         }
 
         try {
-            String imageUri = food.getImgUrl();
+            String imageUri =MyApplication.BASE_API_URL +"/"+ food.getImgUrl();
             Picasso.get().load(imageUri).fit().centerCrop()
                     .placeholder(R.drawable.food_img_default)
                     .error(R.drawable.food_img_default)

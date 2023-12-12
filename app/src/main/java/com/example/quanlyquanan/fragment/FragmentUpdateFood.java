@@ -1,14 +1,22 @@
 package com.example.quanlyquanan.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +35,8 @@ import com.example.quanlyquanan.filter.DecimalDigitsInputFilter;
 import com.example.quanlyquanan.model.Category;
 import com.example.quanlyquanan.model.Food;
 import com.example.quanlyquanan.model.UpdateFood;
+import com.example.quanlyquanan.model.file.RealPathUtil;
+import com.example.quanlyquanan.permission.Permission;
 import com.example.quanlyquanan.response.ResponseFoodById;
 import com.example.quanlyquanan.setting.MyApplication;
 import com.google.gson.Gson;
@@ -34,9 +44,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,6 +72,9 @@ public class FragmentUpdateFood extends Fragment {
     List<Category> categoryList;
 
     AdapterSpinner adapterSpinner;
+    private Uri mUri;
+
+    private Permission permission;
 
 
     public FragmentUpdateFood() {
@@ -92,6 +109,7 @@ public class FragmentUpdateFood extends Fragment {
 
 
     private void setControl() {
+        permission = new Permission(this);
 
         icBack = mView.findViewById(R.id.ic_back_fragment_updatefood);
         foodImg = mView.findViewById(R.id.img_addfood_fragment_modifyfood);
@@ -159,7 +177,11 @@ public class FragmentUpdateFood extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         alertDialog.dismiss();
-                        updateFood(food);
+                        if(mUri == null) {
+                            Toast.makeText(getContext(), "Bạn phải chọn ảnh", Toast.LENGTH_LONG).show();
+                        }else {
+                            updateFood(food);
+                        }
                     }
                 });
                 alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Hủy", new DialogInterface.OnClickListener() {
@@ -169,6 +191,21 @@ public class FragmentUpdateFood extends Fragment {
                     }
                 });
                 alertDialog.show();
+            }
+        });
+
+        foodImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("CHECKPERMISSION", "onClick: ");
+                if (!permission.isPermissionPickFileAccepted()) {
+                    Log.d("CHECKPERMISSION", "click button : chua cap quyen");
+                    permission.requestRuntimePermission();
+
+                } else {
+                    Log.d("CHECKPERMISSION", "click button : da cap quyen");
+                    openGallery();
+                }
             }
         });
     }
@@ -187,47 +224,60 @@ public class FragmentUpdateFood extends Fragment {
             return;
         }
 
-//
-//        FoodApi.foodApi.updateFood(
-//                food.get_id(),
-//                edtFoodName.getText().toString().trim(),
-//                edtPrice.getText().toString().trim(),
-//                edtDiscount.getText().toString(),
-//                edtNote.getText().toString().trim(),
-//                edtSoluong.getText().toString().trim(),
-//                String.valueOf(food.getStatus()),
-//                category.get_id()
-//        )
+        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);
+        File file = new File(realPathImage);
+//        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestBodyImgFile = RequestBody.create(MediaType.parse(requireActivity().getContentResolver().getType(mUri)), file);
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
 
-        UpdateFood updateFood = new UpdateFood(
-                edtFoodName.getText().toString().trim(),
-                edtPrice.getText().toString().trim(),
-                edtDiscount.getText().toString(),
-                edtNote.getText().toString().trim(),
-                edtSoluong.getText().toString().trim(),
-                String.valueOf(food.getStatus()),
-                category.get_id());
+        String foodId = food.get_id();
+        String foodName = edtFoodName.getText().toString().trim();
+        String price = edtPrice.getText().toString().trim();
+        String note = edtNote.getText().toString().trim();
+        String discount = edtDiscount.getText().toString().trim();
+        String soluong = edtSoluong.getText().toString().trim();
+        String categoryId = category.get_id();
 
-        FoodApi.foodApi.updateFood(food.get_id(), updateFood)
+// Display the information in a toast message
+        String toastMessage = "Food ID: " + foodId +
+                "\nMultipartBody: " + multipartBody +
+                "\nFood Name: " + foodName +
+                "\nPrice: " + price +
+                "\nDiscount: " + discount +
+                "\nNote: " + note +
+                "\nSoluong: " + soluong +
+                "\nCategory ID: " + categoryId;
+
+        Toast.makeText(getContext(), toastMessage, Toast.LENGTH_LONG).show();
+        Log.d("CHECKLOG", "updateFood: " + toastMessage);
+
+        FoodApi.foodApi.updateFood(food.get_id(),
+                        multipartBody,
+                        edtFoodName.getText().toString().trim(),
+                        edtPrice.getText().toString().trim(),
+                        edtDiscount.getText().toString().trim(),
+                        edtNote.getText().toString().trim(),
+                        edtSoluong.getText().toString().trim(),
+                        category.get_id())
                 .enqueue(new Callback<ResponseFoodById>() {
                     @Override
                     public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
                         if (response.isSuccessful()) {
-                            if (response.body().getStatus().equals("Success")) {
-                                Food newFood = response.body().getFood();
-                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+//                            if (response.body().getStatus().equals("Success")) {
+//                                Food newFood = response.body().getFood();
+//                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+//
+//                                // Cập nhật biến food với giá trị của newFood
+//                                food.setName(newFood.getName());
+//                                food.setPrice(newFood.getPrice());
+//                                food.setDiscount(newFood.getDiscount());
+//                                food.setDescription(newFood.getDescription());
+//                                food.setSoLuongTon(newFood.getSoLuongTon());
+//                                food.setStatus(newFood.getStatus());
+//                                food.setCategory(newFood.getCategory());
+//                                food.setImgUrl(newFood.getImgUrl());
 
-                                // Cập nhật biến food với giá trị của newFood
-                                food.setName(newFood.getName());
-                                food.setPrice(newFood.getPrice());
-                                food.setDiscount(newFood.getDiscount());
-                                food.setDescription(newFood.getDescription());
-                                food.setSoLuongTon(newFood.getSoLuongTon());
-                                food.setStatus(newFood.getStatus());
-                                food.setCategory(newFood.getCategory());
-                                food.setImgUrl(newFood.getImgUrl());
-
-                            }
+//                            }
 
                         } else {
                             showErrorResponse(response);
@@ -240,6 +290,30 @@ public class FragmentUpdateFood extends Fragment {
                     }
                 });
 
+    }
+
+    private void openGallery() {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Choose image"), MyApplication.REQUEST_CODE_CHOOSE_FILE);
+//        registerForActivityResult();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == MyApplication.REQUEST_CODE_CHOOSE_FILE && resultCode == RESULT_OK) {
+            Uri selectedImage = data.getData();
+            mUri = selectedImage;
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImage);
+                foodImg.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showErrorResponse(Response<?> response) {

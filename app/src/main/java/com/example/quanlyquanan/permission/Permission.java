@@ -1,43 +1,57 @@
 package com.example.quanlyquanan.permission;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.example.quanlyquanan.setting.MyApplication;
 
 public class Permission {
-    private AppCompatActivity activity;
+    private Fragment fragment;
 
-    public Permission(AppCompatActivity activity) {
-        this.activity = activity;
-    }
-
-    public boolean isPermissionCaptureAccepted() {
-        boolean isAccepted = ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
-        return isAccepted;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void requestPermissionCapture() {
-        activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, 1002);
+    public Permission(Fragment fragment) {
+        this.fragment = fragment;
     }
 
     public boolean isPermissionPickFileAccepted() {
-        boolean res1 = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        boolean res2 = ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        return res1 && res2;
+        boolean res2 = ContextCompat.checkSelfPermission(fragment.requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return res2;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void requestPickFilePermission() {
-        activity.requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1000);
+    public void requestRuntimePermission() {
+        if (fragment.shouldShowRequestPermissionRationale(MyApplication.PERMISSION_READ_EXTERNAL_STORAGE)) {
+            Log.d("CHECKPERMISSION", "requestRuntimePermission: " + "else if");
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(fragment.requireContext());
+            builder.setMessage("Ứng dụng cần quyền truy cập bộ nhớ để mở thư viện ảnh!")
+                    .setTitle("Yêu cầu quyền truy cập bộ nhớ")
+                    .setCancelable(false)
+                    .setPositiveButton("Đồng ý", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(fragment.requireActivity(), new String[]{MyApplication.PERMISSION_READ_EXTERNAL_STORAGE}, MyApplication.PERMISSION_REQ_CODE);
+
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("Từ chối", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.show();
+        } else {
+            Log.d("CHECKPERMISSION", "requestRuntimePermission: " + "else");
+            ActivityCompat.requestPermissions(fragment.requireActivity(), new String[]{MyApplication.PERMISSION_READ_EXTERNAL_STORAGE}, MyApplication.PERMISSION_REQ_CODE);
+        }
     }
 }

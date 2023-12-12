@@ -50,15 +50,6 @@ public interface FoodApi {
             @Part("category") String categoryID
     );
 
-    @FormUrlEncoded
-    @POST("/foods")
-    Call<ResponseFoodById> postFoodWithoutFile(
-            @Field("name") String name,
-            @Field("price") String price,
-            @Field("description") String description,
-            @Field("soLuongTon") String soLuongTon,
-            @Field("category") String categoryID
-    );
 //    Call<ResponseFoodById> postFood(@Part MultipartBody.Part file,
 //                                    @Part("name") String name,
 //                                    @Part("price") int price,
@@ -81,6 +72,18 @@ public interface FoodApi {
 //                                      @Part("status") String status,
 //                                      @Part("category") String category);
 
+    //    @PATCH("/foods/{id}")
+//    Call<ResponseFoodById> updateFood(@Path("id")String id, @Body UpdateFood updateFood);
+    @Multipart
     @PATCH("/foods/{id}")
-    Call<ResponseFoodById> updateFood(@Path("id")String id, @Body UpdateFood updateFood);
+    Call<ResponseFoodById> updateFood(
+            @Path("id") String id,
+            @Part MultipartBody.Part file,
+            @Part("name") String name,
+            @Part("price") String price,
+            @Part("discount") String discount,
+            @Part("description") String description,
+            @Part("soLuongTon") String soLuongTon,
+            @Part("category") String categoryID
+    );
 }
