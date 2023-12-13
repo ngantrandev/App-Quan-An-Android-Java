@@ -62,7 +62,7 @@ import retrofit2.Response;
  */
 public class FragmentUpdateFood extends Fragment {
     private View mView;
-    ImageView icBack, foodImg;
+    ImageView icBack, foodImg, btnIncrease, btnDecrease;
 
     Spinner spinnerCategory;
     EditText edtFoodName, edtSoluong, edtPrice, edtDiscount, edtNote;
@@ -121,6 +121,9 @@ public class FragmentUpdateFood extends Fragment {
         edtNote = mView.findViewById(R.id.edt_note_fragment_modifyfood);
         btnChangeData = mView.findViewById(R.id.btn_submit_fragment_modifyfood);
         edtDiscount.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
+
+        btnIncrease = mView.findViewById(R.id.btn_increase_fragment_updatefood);
+        btnDecrease = mView.findViewById(R.id.btn_decrease_fragment_updatefood);
 //
         food = (Food) getArguments().getSerializable("food");
         categoryList = (List<Category>) getArguments().get("category_list");
@@ -177,11 +180,11 @@ public class FragmentUpdateFood extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         alertDialog.dismiss();
-                        if(mUri == null) {
-                            Toast.makeText(getContext(), "Bạn phải chọn ảnh", Toast.LENGTH_LONG).show();
-                        }else {
+//                        if(mUri == null) {
+//                            Toast.makeText(getContext(), "Bạn phải chọn ảnh", Toast.LENGTH_LONG).show();
+//                        }else {
                             updateFood(food);
-                        }
+//                        }
                     }
                 });
                 alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Hủy", new DialogInterface.OnClickListener() {
@@ -208,6 +211,33 @@ public class FragmentUpdateFood extends Fragment {
                 }
             }
         });
+
+        btnIncrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String temp = edtSoluong.getText().toString().trim();
+
+                int soluong = Integer.parseInt(temp);
+                soluong++;
+                edtSoluong.setText(String.valueOf(soluong));
+
+            }
+        });
+
+        btnDecrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String temp = edtSoluong.getText().toString().trim();
+
+                int soluong = Integer.parseInt(temp);
+
+                if (soluong > 0)
+                    soluong--;
+
+                edtSoluong.setText(String.valueOf(soluong));
+
+            }
+        });
     }
 
     private void updateFood(Food food) {
@@ -224,45 +254,74 @@ public class FragmentUpdateFood extends Fragment {
             return;
         }
 
-        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);
-        File file = new File(realPathImage);
-//        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        RequestBody requestBodyImgFile = RequestBody.create(MediaType.parse(requireActivity().getContentResolver().getType(mUri)), file);
-        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
+//        String realPathImage = RealPathUtil.getRealPath(getContext(), mUri);
+//        File file = new File(realPathImage);
+////        RequestBody  requestBodyImgFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+//        RequestBody requestBodyImgFile = RequestBody.create(MediaType.parse(requireActivity().getContentResolver().getType(mUri)), file);
+//        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("file", file.getName(), requestBodyImgFile);
 
-        String foodId = food.get_id();
-        String foodName = edtFoodName.getText().toString().trim();
-        String price = edtPrice.getText().toString().trim();
-        String note = edtNote.getText().toString().trim();
-        String discount = edtDiscount.getText().toString().trim();
-        String soluong = edtSoluong.getText().toString().trim();
-        String categoryId = category.get_id();
+//        String foodId = food.get_id();
+//        String foodName = edtFoodName.getText().toString().trim();
+//        String price = edtPrice.getText().toString().trim();
+//        String note = edtNote.getText().toString().trim();
+//        String discount = edtDiscount.getText().toString().trim();
+//        String soluong = edtSoluong.getText().toString().trim();
+//        String categoryId = category.get_id();
 
-// Display the information in a toast message
-        String toastMessage = "Food ID: " + foodId +
-                "\nMultipartBody: " + multipartBody +
-                "\nFood Name: " + foodName +
-                "\nPrice: " + price +
-                "\nDiscount: " + discount +
-                "\nNote: " + note +
-                "\nSoluong: " + soluong +
-                "\nCategory ID: " + categoryId;
 
-        Toast.makeText(getContext(), toastMessage, Toast.LENGTH_LONG).show();
-        Log.d("CHECKLOG", "updateFood: " + toastMessage);
+        UpdateFood updateFood = new UpdateFood(
+                edtFoodName.getText().toString().trim(),
+                edtPrice.getText().toString().trim(),
+                edtDiscount.getText().toString(),
+                edtNote.getText().toString().trim(),
+                edtSoluong.getText().toString().trim(),
+                String.valueOf(food.getStatus()),
+                category.get_id());
 
-        FoodApi.foodApi.updateFood(food.get_id(),
-                        multipartBody,
-                        edtFoodName.getText().toString().trim(),
-                        edtPrice.getText().toString().trim(),
-                        edtDiscount.getText().toString().trim(),
-                        edtNote.getText().toString().trim(),
-                        edtSoluong.getText().toString().trim(),
-                        category.get_id())
-                .enqueue(new Callback<ResponseFoodById>() {
-                    @Override
-                    public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
-                        if (response.isSuccessful()) {
+        FoodApi.foodApi.updateFood(food.get_id(), updateFood)
+                        .enqueue(new Callback<ResponseFoodById>() {
+                            @Override
+                            public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body().getStatus().equals("Success")) {
+                                        Food newFood = response.body().getFood();
+                                        Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+
+                                        // Cập nhật biến food với giá trị của newFood
+                                        food.setName(newFood.getName());
+                                        food.setPrice(newFood.getPrice());
+                                        food.setDiscount(newFood.getDiscount());
+                                        food.setDescription(newFood.getDescription());
+                                        food.setSoLuongTon(newFood.getSoLuongTon());
+                                        food.setStatus(newFood.getStatus());
+                                        food.setCategory(newFood.getCategory());
+                                        food.setImgUrl(newFood.getImgUrl());
+
+                                    }
+
+                                } else {
+                                    showErrorResponse(response);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseFoodById> call, Throwable t) {
+                                showFailedResponse();
+                            }
+                        });
+
+//        FoodApi.foodApi.updateFood(food.get_id(),
+//                        multipartBody,
+//                        edtFoodName.getText().toString().trim(),
+//                        edtPrice.getText().toString().trim(),
+//                        edtDiscount.getText().toString().trim(),
+//                        edtNote.getText().toString().trim(),
+//                        edtSoluong.getText().toString().trim(),
+//                        category.get_id())
+//                .enqueue(new Callback<ResponseFoodById>() {
+//                    @Override
+//                    public void onResponse(Call<ResponseFoodById> call, Response<ResponseFoodById> response) {
+//                        if (response.isSuccessful()) {
 //                            if (response.body().getStatus().equals("Success")) {
 //                                Food newFood = response.body().getFood();
 //                                Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
@@ -276,19 +335,19 @@ public class FragmentUpdateFood extends Fragment {
 //                                food.setStatus(newFood.getStatus());
 //                                food.setCategory(newFood.getCategory());
 //                                food.setImgUrl(newFood.getImgUrl());
-
+//
 //                            }
-
-                        } else {
-                            showErrorResponse(response);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseFoodById> call, Throwable t) {
-                        showFailedResponse();
-                    }
-                });
+//
+//                        } else {
+//                            showErrorResponse(response);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ResponseFoodById> call, Throwable t) {
+//                        showFailedResponse();
+//                    }
+//                });
 
     }
 

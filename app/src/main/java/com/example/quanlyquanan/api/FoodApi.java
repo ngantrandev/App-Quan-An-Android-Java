@@ -72,18 +72,18 @@ public interface FoodApi {
 //                                      @Part("status") String status,
 //                                      @Part("category") String category);
 
-    //    @PATCH("/foods/{id}")
-//    Call<ResponseFoodById> updateFood(@Path("id")String id, @Body UpdateFood updateFood);
-    @Multipart
-    @PATCH("/foods/{id}")
-    Call<ResponseFoodById> updateFood(
-            @Path("id") String id,
-            @Part MultipartBody.Part file,
-            @Part("name") String name,
-            @Part("price") String price,
-            @Part("discount") String discount,
-            @Part("description") String description,
-            @Part("soLuongTon") String soLuongTon,
-            @Part("category") String categoryID
-    );
+        @PATCH("/foods/{id}")
+    Call<ResponseFoodById> updateFood(@Path("id")String id, @Body UpdateFood updateFood);
+//    @Multipart
+//    @PATCH("/foods/{id}")
+//    Call<ResponseFoodById> updateFood(
+//            @Path("id") String id,
+//            @Part MultipartBody.Part file,
+//            @Part("name") String name,
+//            @Part("price") String price,
+//            @Part("discount") String discount,
+//            @Part("description") String description,
+//            @Part("soLuongTon") String soLuongTon,
+//            @Part("category") String categoryID
+//    );
 }

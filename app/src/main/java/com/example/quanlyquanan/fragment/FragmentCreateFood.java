@@ -68,7 +68,7 @@ public class FragmentCreateFood extends Fragment {
     private static final int REQUEST_CODE_READ_EXTERNAL_STOREAGE = 100;
     private View mView;
     EditText edtFoodName, edtSoLuong, edtNote, edtPrice;
-    ImageView foodImage;
+    ImageView foodImage, btnIncrease, btnDecrease;
     SpinnerAdapter arrayAdapterFoodType;
     Button btnSubmit;
     Spinner spinnerCategory;
@@ -121,6 +121,10 @@ public class FragmentCreateFood extends Fragment {
         imgBack = mView.findViewById(R.id.ic_back_fragment_list_food);
         foodImage = mView.findViewById(R.id.img_addfood_fragment_create_food);
 
+        btnIncrease = mView.findViewById(R.id.btn_increase_fragment_createfood);
+        btnDecrease = mView.findViewById(R.id.btn_decrease_fragment_createfood);
+
+
         categoryList = (List<Category>) getArguments().get("category_list");
         foodList = (List<Food>) getArguments().get("food_list");
 
@@ -165,6 +169,33 @@ public class FragmentCreateFood extends Fragment {
                     Log.d("CHECKPERMISSION", "click button : da cap quyen");
                     openGallery();
                 }
+            }
+        });
+
+        btnIncrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String temp = edtSoLuong.getText().toString().trim();
+
+                int soluong = Integer.parseInt(temp);
+                soluong++;
+                edtSoLuong.setText(String.valueOf(soluong));
+
+            }
+        });
+
+        btnDecrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String temp = edtSoLuong.getText().toString().trim();
+
+                int soluong = Integer.parseInt(temp);
+
+                if (soluong > 0)
+                    soluong--;
+
+                edtSoLuong.setText(String.valueOf(soluong));
+
             }
         });
     }
