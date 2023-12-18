@@ -4,9 +4,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <application
@@ -15,11 +17,11 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/food_image"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/food_image"
         android:supportsRtl="true"
         android:theme="@style/Theme.QuanLyQuanAn"
         android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         tools:targetApi="34">
         <activity
             android:name=".activity.MainActivity"
@@ -40,6 +42,21 @@
             android:name=".activity.ActivityListFood"
             android:exported="true" />
         <activity
+            android:name=".hao.activity_table_menu"
+            android:exported="true" />
+        <activity
+            android:name=".hao.activity_food_menu"
+            android:exported="true" />
+        <activity
+            android:name=".hao.activity_loadingApp"
+            android:exported="true" />
+        <activity
+            android:name=".hao.activity_show_bill_table"
+            android:exported="true" />
+
+
+        <activity
+
             android:name=".activity.StartActivity"
             android:exported="true">
             <intent-filter>

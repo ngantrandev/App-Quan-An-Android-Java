@@ -1,5 +1,6 @@
 package com.example.quanlyquanan.api;
 
+import com.example.quanlyquanan.model.Bill;
 import com.example.quanlyquanan.model.MyDate;
 import com.example.quanlyquanan.response.ResponseAmount;
 import com.example.quanlyquanan.response.ResponseBill;
@@ -13,8 +14,11 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
+import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -35,6 +39,12 @@ public interface BillApi {
 
     @GET("/bills/{id}")
     Call<ResponseBillById> getBillById(@Path("id") String id);
+
+    @FormUrlEncoded
+    @POST("/bills/")
+    Call<ResponseBillById> createNewBill( @Field("timeCheckIn") String timeCheckIn,
+                                          @Field("table") String table,
+                                          @Field("seller") String seller);
 
     @GET("/bills/date")
     Call<ResponseAmount> getBillByDate(

@@ -3,4 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="bg_color_item_food">#FFFFF5</color>
+    <color name="transperent">#00000000</color>
+    <color name="green">#00FF00</color>
+    <color name="red">#8A0022</color>
+    <color name="gray">	#B8B8B8</color>
+    <color name="contentbutton">#FF000000</color>
 </resources>

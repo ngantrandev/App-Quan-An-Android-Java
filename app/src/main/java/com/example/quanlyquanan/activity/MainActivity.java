@@ -18,11 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.hao.activity_table_menu;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton btnShowFood, btnShowCategory, btnShowTable, btnThongKe;
+    private ImageButton btnShowFood, btnShowCategory, btnShowTable, btnThongKe, btnDatban;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnDatban.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TAG", "onClick: btndatban");
+                try{
+                    Intent intent = new Intent(MainActivity.this, activity_table_menu.class);
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.d("TAG", "onClick: btndatban" + e);
+                }
+            }
+        });
+
         findViewById(R.id.btn_show_info).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         btnShowFood = findViewById(R.id.btn_showfood_activitymain);
         btnShowTable = findViewById(R.id.btn_show_tablelist_mainactivity);
         btnThongKe = findViewById(R.id.btn_thongke_mainactivity);
+        btnDatban = findViewById(R.id.btnDatbanactivityMain);
     }
 
 }

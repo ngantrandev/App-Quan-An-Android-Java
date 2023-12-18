@@ -1,6 +1,11 @@
 package com.example.quanlyquanan.model;
 
-public class Bill {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Bill implements Parcelable {
     private String _id, timeCheckIn, timeCheckOut, note;
     private int tips, status;
     private Table table;
@@ -69,4 +74,46 @@ public class Bill {
     public void setSeller(Seller seller) {
         this.seller = seller;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(timeCheckIn);
+        dest.writeString(timeCheckOut);
+        dest.writeString(note);
+        dest.writeInt(tips);
+        dest.writeInt(status);
+        dest.writeParcelable(table, flags);
+        dest.writeParcelable(seller, flags);
+    }
+
+    // Cần thêm constructor sau đây để đọc dữ liệu từ Parcel
+    protected Bill(Parcel in) {
+        _id = in.readString();
+        timeCheckIn = in.readString();
+        timeCheckOut = in.readString();
+        note = in.readString();
+        tips = in.readInt();
+        status = in.readInt();
+        table = in.readParcelable(Table.class.getClassLoader());
+        seller = in.readParcelable(Seller.class.getClassLoader());
+    }
+
+    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+        @Override
+        public Bill createFromParcel(Parcel in) {
+            return new Bill(in);
+        }
+
+        @Override
+        public Bill[] newArray(int size) {
+            return new Bill[size];
+        }
+    };
+
 }
