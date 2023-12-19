@@ -6,6 +6,13 @@ public class BillInfo {
     private String food;
     private int quantity, price;
 
+    public BillInfo(String bill, String food, int quantity, int price) {
+        this.bill = bill;
+        this.food = food;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
     public String get_id() {
         return _id;
     }

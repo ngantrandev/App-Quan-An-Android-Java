@@ -104,4 +104,14 @@ public class Food implements Serializable {
         this.category = category;
     }
 
+    public int getNewPrice() {
+
+        if (this.discount == 0) return this.price;
+
+        else {
+            return (int) (price * (1 - discount / 100));
+        }
+
+    }
+
 }

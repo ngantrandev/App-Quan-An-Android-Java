@@ -19,9 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.api.BillApi;
+import com.example.quanlyquanan.api.FoodApi;
 import com.example.quanlyquanan.model.Bill;
+import com.example.quanlyquanan.model.Food;
 import com.example.quanlyquanan.model.Table;
 import com.example.quanlyquanan.response.ResponseBillById;
+import com.example.quanlyquanan.response.ResponseFood;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,8 +42,8 @@ public class activity_food_menu extends AppCompatActivity {
     Button exportbtn;
     ImageButton btnBack;
     TableInfo table;
-    List<FoodInfo> dsFood = new ArrayList<>();
-    List<FoodInfo> dsFoodFilter = new ArrayList<>();
+    List<Food> dsFood = new ArrayList<>();
+    List<Food> dsFoodFilter = new ArrayList<>();
     SearchView btnsearch;
     RecyclerView foodMenuLv;
     AdapterFood foodAdapter;
@@ -69,6 +72,7 @@ public class activity_food_menu extends AppCompatActivity {
 //            openTableMenu();
 //        }
 
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("table")) {
             mtable = intent.getParcelableExtra("table");
@@ -88,6 +92,7 @@ public class activity_food_menu extends AppCompatActivity {
             }
         }
 
+
         setcontrol();
         setevent();
     }
@@ -97,9 +102,24 @@ public class activity_food_menu extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBillById> call, Response<ResponseBillById> response) {
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    mBill = response.body().getBill();
+                    try{
+                        mBill = response.body().getBill();
+                    }catch (Exception e){
+                        Log.d("BILLLOAD", "onResponse: bill" + e);
+                    }
 
+                    try{
+                        foodAdapter = new AdapterFood(activity_food_menu.this, dsFoodFilter, mBill);
+                        foodMenuLv.setAdapter(foodAdapter);
+                        foodMenuLv.setLayoutManager(new LinearLayoutManager(activity_food_menu.this, LinearLayoutManager.VERTICAL, false));
+                    } catch (Exception e){
+                        Log.d("BILLLOAD", "onResponse: " + e);
+                    }
+
+                    Log.d("BILLLOAD", "da load duoc bill voi " + mBill.toString());
+                    Toast.makeText(activity_food_menu.this, "Da load duoc bill",Toast.LENGTH_SHORT).show();
                     notifyBillAvaiable();
+
                 } else {
                     Toast.makeText(activity_food_menu.this, "Khong tim thay bill", Toast.LENGTH_SHORT).show();
 //                    openTableMenu();
@@ -108,6 +128,7 @@ public class activity_food_menu extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseBillById> call, Throwable t) {
+                Log.d("TAG", "onFailure: " + t);
                 Toast.makeText(activity_food_menu.this, "Khong the ket noi den server", Toast.LENGTH_LONG).show();
                 openTableMenu();
             }
@@ -156,7 +177,9 @@ public class activity_food_menu extends AppCompatActivity {
     }
 
     private void notifyBillAvaiable() {
-
+        Log.d("TAG", "notifyBillAvaiable: " +mBill);
+        foodAdapter.notifyDataSetChanged();
+        Log.d("TAG", "sau khi notify: " +mBill);
     }
 
 
@@ -168,9 +191,15 @@ public class activity_food_menu extends AppCompatActivity {
         exportbtn = findViewById(R.id.foodMenuExportBtn);
         btnFilter = findViewById(R.id.foodSpinnerFilter);
         CreateDataFilter();
-        foodAdapter = new AdapterFood(this, dsFoodFilter, idtable);
+
+//        Log.d("TAG", "truoc khi gan bill" + mBill.toString());
+
+        foodAdapter = new AdapterFood(this, dsFoodFilter, mBill);
         foodMenuLv.setAdapter(foodAdapter);
         foodMenuLv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        loadFoodList();
+
     }
 
     private void setevent() {
@@ -213,8 +242,8 @@ public class activity_food_menu extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() > 0) {
                     dsFoodFilter.clear();
-                    for (FoodInfo f : dsFood)
-                        if ((f.getFoodNote().toLowerCase().contains(newText) || f.getFoodName().toLowerCase().contains(newText) || f.getFoodtype().toLowerCase().contains(newText))) {
+                    for (Food f : dsFood)
+                        if ((f.getDescription().toLowerCase().contains(newText) || f.getName().toLowerCase().contains(newText) || f.getCategory().getName().toLowerCase().contains(newText))) {
                             dsFoodFilter.add(f);
                         }
                     foodAdapter.notifyDataSetChanged();
@@ -305,38 +334,42 @@ public class activity_food_menu extends AppCompatActivity {
         switch (index) {
             //Tất cả
             case 0: {
-                for (FoodInfo f : dsFood) {
+                for (Food f : dsFood) {
                     dsFoodFilter.add(f);
                 }
                 break;
             }
             //Còn
             case 1: {
-                for (FoodInfo f : dsFood) {
-                    if (Manager.getFoodRemaining(Manager.FindIdFoodInTable(f.getFoodId())) > 0) {
+                for (Food f : dsFood) {
+//                    if (Manager.getFoodRemaining(Manager.FindIdFoodInTable(f.get_id())) > 0) {
+//                        dsFoodFilter.add(f);
+//                    }
+                    if(f.getSoLuongTon() > 0)
                         dsFoodFilter.add(f);
-                    }
                 }
                 break;
             }
             //Hết
             case 2: {
-                for (FoodInfo f : dsFood) {
-                    if (Manager.getFoodRemaining(Manager.FindIdFoodInTable(f.getFoodId())) < 1) {
+                for (Food f : dsFood) {
+//                    if (Manager.getFoodRemaining(Manager.FindIdFoodInTable(f.get_id())) < 1) {
+//                        dsFoodFilter.add(f);
+//                    }
+                    if(f.getSoLuongTon()==0)
                         dsFoodFilter.add(f);
-                    }
                 }
                 break;
             }
-            //Đã chọn
-            case 3: {
-                for (FoodInfo f : dsFood) {
-                    if (f.getFoodSelAmount() > 0) {
-                        dsFoodFilter.add(f);
-                    }
-                }
-                break;
-            }
+//            //Đã chọn
+//            case 3: {
+//                for (Food f : dsFood) {
+//                    if (f.getFoodSelAmount() > 0) {
+//                        dsFoodFilter.add(f);
+//                    }
+//                }
+//                break;
+//            }
         }
         foodAdapter.notifyDataSetChanged();
     }
@@ -353,5 +386,28 @@ public class activity_food_menu extends AppCompatActivity {
 
     private String getUserId() {
         return "654905e6e9cdc122868b778b";
+    }
+
+    private void loadFoodList(){
+        FoodApi.foodApi.getFoods().enqueue(new Callback<ResponseFood>() {
+            @Override
+            public void onResponse(Call<ResponseFood> call, Response<ResponseFood> response) {
+                if(response.isSuccessful()){
+                    if(response.body().getStatus().equals("Success")){
+                        dsFood.clear();
+                        dsFood.addAll(response.body().getFoodList());
+//                        dsFoodFilter.clear();
+//                        dsFoodFilter.addAll(dsFood);
+                        HandleSpinnerSelection(btnFilter.getSelectedItemPosition());
+                        foodAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseFood> call, Throwable t) {
+                Toast.makeText(activity_food_menu.this, "Khong the lay du lieu mon an", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

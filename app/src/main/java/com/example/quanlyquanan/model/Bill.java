@@ -5,11 +5,23 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.List;
+
 public class Bill implements Parcelable {
     private String _id, timeCheckIn, timeCheckOut, note;
     private int tips, status;
     private Table table;
     private Seller seller;
+
+    private List<BillInfo> billinfos;
+
+    public List<BillInfo> getBillinfos() {
+        return billinfos;
+    }
+
+    public void setBillinfos(List<BillInfo> billinfos) {
+        this.billinfos = billinfos;
+    }
 
     public String get_id() {
         return _id;
@@ -116,4 +128,18 @@ public class Bill implements Parcelable {
         }
     };
 
+    @Override
+    public String toString() {
+        return "Bill{" +
+                "_id='" + _id + '\'' +
+                ", timeCheckIn='" + timeCheckIn + '\'' +
+                ", timeCheckOut='" + timeCheckOut + '\'' +
+                ", note='" + note + '\'' +
+                ", tips=" + tips +
+                ", status=" + status +
+                ", table=" + table +
+                ", seller=" + seller +
+                ", billinfos=" + billinfos +
+                '}';
+    }
 }
