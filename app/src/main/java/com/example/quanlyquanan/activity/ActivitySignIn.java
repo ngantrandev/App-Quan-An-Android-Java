@@ -49,7 +49,7 @@ public class ActivitySignIn extends AppCompatActivity {
     }
 
     private void VerifyAccount() {
-        User user1 = new User("",InputUserName.getText().toString(),InputPassword.getText().toString(),"","","","","","","");
+        User user1 = new User("",InputUserName.getText().toString().trim(),InputPassword.getText().toString().trim(),"","","","","","","");
         Log.d("LOGINVERIFY", "VerifyAccount: "+user1);
         UserApi.userApi.LoginUser(user1).enqueue(new Callback<ResponseUserLogin>() {
             @Override

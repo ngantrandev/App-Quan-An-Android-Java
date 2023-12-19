@@ -33,7 +33,7 @@
         app:srcCompat="@drawable/ic_back" />
 
     <TextView
-        android:id="@+id/textView39"
+        android:id="@+id/LabelNameUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -46,16 +46,16 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     <TextView
-        android:id="@+id/textView40"
+        android:id="@+id/LabelRoleUser"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
         android:text="Chuc vu: Quan ly"
-        app:layout_constraintEnd_toEndOf="@+id/textView39"
+        app:layout_constraintEnd_toEndOf="@+id/LabelNameUser"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/textView39"
-        app:layout_constraintTop_toBottomOf="@+id/textView39" />
+        app:layout_constraintStart_toStartOf="@+id/LabelNameUser"
+        app:layout_constraintTop_toBottomOf="@+id/LabelNameUser" />
 
     <TextView
         android:id="@+id/textView43"
@@ -67,7 +67,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView40" />
+        app:layout_constraintTop_toBottomOf="@+id/LabelRoleUser" />
 
     <TextView
         android:id="@+id/textView44"

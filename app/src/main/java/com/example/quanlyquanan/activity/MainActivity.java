@@ -116,10 +116,19 @@ public class MainActivity extends AppCompatActivity {
                 TextView labelUBirth = viewBottomSheet.findViewById(R.id.LabelUBirth);
                 TextView labelUEmail = viewBottomSheet.findViewById(R.id.LabelUEmail);
                 TextView labelUPhone = viewBottomSheet.findViewById(R.id.LabelUPhone);
-                labelUName.setText(user.getFirstName()+" "+user.getLastName());
-                labelUBirth.setText(user.getBirthDay()+"");
-                labelUEmail.setText(user.getEmail()+"");
-                labelUPhone.setText(user.getSdt()+"");
+                TextView LabelUSex = viewBottomSheet.findViewById(R.id.LabelUSex);
+                TextView labelName = viewBottomSheet.findViewById(R.id.LabelNameUser);
+                TextView labelRole = viewBottomSheet.findViewById(R.id.LabelRoleUser);
+                labelUName.setText(user.getFirstName().equals("null")?"":user.getFirstName()+" "+ (user.getLastName().equals("null")?"Trống":user.getLastName()));
+                labelUBirth.setText(user.getBirthDay().equals("null")?"Trống":user.getBirthDay());
+                labelUEmail.setText(user.getEmail().equals("null")?"Trống":user.getEmail());
+                labelUPhone.setText(user.getSdt().equals("null")?"Trống":user.getSdt());
+                LabelUSex.setText(user.getSex().equals("null")?"Trống":user.getSex());
+                labelUName.setText(user.getFirstName().equals("null")?"":user.getFirstName()+" "+ (user.getLastName().equals("null")?"Trống":user.getLastName()));
+                if(user.getFirstName().equals("null")&& user.getLastName().equals("null")){
+                    labelName.setText("Chưa có tên");
+                }
+                labelRole.setText(user.getRole().toString());
                 btnBack.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -142,7 +151,10 @@ public class MainActivity extends AppCompatActivity {
         btnThongKe = findViewById(R.id.btn_thongke_mainactivity);
         btnDatban = findViewById(R.id.btnDatbanactivityMain);
         tv_user_fullname_activitymain = findViewById(R.id.tv_user_fullname_activitymain);
-        tv_user_fullname_activitymain.setText(user.getUsername());
+        tv_user_fullname_activitymain.setText(user.getLastName());
+        if(user.getFirstName().equals("null")&& user.getLastName().equals("null")){
+            tv_user_fullname_activitymain.setText("Chưa có tên");
+        }
     }
 
 }
