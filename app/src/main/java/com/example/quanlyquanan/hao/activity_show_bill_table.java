@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,15 +20,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.adapter.AdapterListFood;
+import com.example.quanlyquanan.api.BillApi;
 import com.example.quanlyquanan.model.Bill;
+import com.example.quanlyquanan.model.BillInfo;
 import com.example.quanlyquanan.model.Food;
 import com.example.quanlyquanan.model.Table;
+import com.example.quanlyquanan.response.ResponseBillById;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class activity_show_bill_table extends AppCompatActivity {
 
@@ -39,7 +47,6 @@ public class activity_show_bill_table extends AppCompatActivity {
     Table mTable;
     LinearLayout iconcheck;
     Date currentTime;
-    int PriceBill, Total, tip;
     EditText TipInput;
     List<FoodInfo> DsFoodBill = new ArrayList<>();
     RecyclerView recyclerViewFood;
@@ -67,7 +74,7 @@ public class activity_show_bill_table extends AppCompatActivity {
 //            openTableMenu();
 //        }
 
-        try{
+        try {
             Intent intent = getIntent();
             if (intent != null && intent.hasExtra("table") && intent.hasExtra("bill") && intent.hasExtra("foodlist")) {
                 mBill = intent.getParcelableExtra("bill");
@@ -81,10 +88,10 @@ public class activity_show_bill_table extends AppCompatActivity {
 
                 currentTime = Calendar.getInstance().getTime();
                 setcontrol();
-//        setevent();
+                setevent();
             }
-        } catch (Exception e){
-            Log.d("BILLCHECKOUT", "onCreate: " +e);
+        } catch (Exception e) {
+            Log.d("BILLCHECKOUT", "onCreate: " + e);
         }
 //
 
@@ -97,14 +104,16 @@ public class activity_show_bill_table extends AppCompatActivity {
             public void onClick(View view) {
                 btnCheck.setVisibility(View.GONE);
                 iconcheck.setVisibility(View.VISIBLE);
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        Manager.ReturnTable(idtable);
-                        openTableMenu();
-                    }
-                }, 2000);
+
+//                thanhToan();
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+////                        Manager.ReturnTable(idtable);
+//                        openTableMenu();
+//                    }
+//                }, 2000);
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -124,13 +133,13 @@ public class activity_show_bill_table extends AppCompatActivity {
                 if (TipInput.getText().toString().length() != 0) {
                     String str = TipInput.getText().toString();
                     str = str.replaceAll("[,.]", "");
-                    tip = (int) Integer.parseInt(str);
+//                    tip = (int) Integer.parseInt(str);
                 } else {
                     TipInput.setText("0");
-                    tip = 0;
+//                    tip = 0;
                 }
-                Total = PriceBill + tip;
-                billTotalTV.setText(nf.format(Total) + " VNĐ");
+//                Total = PriceBill + tip;
+//                billTotalTV.setText(nf.format(Total) + " VNĐ");
             }
 
             @Override
@@ -143,7 +152,25 @@ public class activity_show_bill_table extends AppCompatActivity {
                 TipInput.addTextChangedListener(this);
             }
         });
-        billTotalTV.setText(nf.format(Total) + " VNĐ");
+//        billTotalTV.setText(nf.format(Total) + " VNĐ");
+    }
+
+    private void thanhToan() {
+
+        int tip = Integer.parseInt(TipInput.getText().toString());
+        mBill.setTips(tip);
+        BillApi.billApi.thanhtoan(mBill.get_id(), mBill).enqueue(new Callback<ResponseBillById>() {
+            @Override
+            public void onResponse(Call<ResponseBillById> call, Response<ResponseBillById> response) {
+                openTableMenu();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBillById> call, Throwable t) {
+                Log.d("BILLCHECKOUT", "onFailure: " + t);
+                Toast.makeText(activity_show_bill_table.this, "Khong the thanh toan", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private void setcontrol() {
@@ -159,20 +186,13 @@ public class activity_show_bill_table extends AppCompatActivity {
         billIdTable.setText(mTable.getTableName());
 
 
-
         adapterBillFood = new AdapterBillFood(this, mBill.getBillinfos(), mFoodList);
-
-        try{
-            recyclerViewFood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        }catch (Exception e){
-            Log.d("BILLCHECKOUT", "setlayout" + e);
-        }
-//        recyclerViewFood.setAdapter(adapterBillFood);
-//        CheckFood();
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-//        recyclerViewFood.setLayoutManager(linearLayoutManager);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerViewFood.setLayoutManager(linearLayoutManager);
         recyclerViewFood.setAdapter(adapterBillFood);
         adapterBillFood.notifyDataSetChanged();
+
+        CheckFood();
     }
 
     void openFoodMenu() {
@@ -188,14 +208,17 @@ public class activity_show_bill_table extends AppCompatActivity {
 
     void CheckFood() {
 //        PriceBill=0;
-//        for (FoodInfo f:Table.getDsFoodSelection()) {
-//            if(f.getFoodSelAmount()>0){
-//                DsFoodBill.add(f);
-//                PriceBill +=(f.getFoodPrice()*f.getFoodSelAmount());
-//            }
-//        }
-//        DecimalFormat nf = new DecimalFormat("#,###");
-//        billPriceTV.setText(nf.format(PriceBill)+" VNĐ");
-//        Total = PriceBill;
+        int totalPrice = 0;
+        int tip = 0;
+        for (BillInfo billInfo : mBill.getBillinfos()) {
+            totalPrice += billInfo.getPrice() * billInfo.getQuantity();
+        }
+
+        DecimalFormat nf = new DecimalFormat("#,###");
+        billPriceTV.setText(nf.format(totalPrice) + " VNĐ");
+
+        billTotalTV.setText(nf.format(totalPrice + tip) + "VNĐ");
+        billDate.setText("" + currentTime);
+
     }
 }

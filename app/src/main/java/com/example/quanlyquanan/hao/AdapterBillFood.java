@@ -22,7 +22,14 @@ public class AdapterBillFood extends RecyclerView.Adapter<HolderFoodBill> {
     List<Food> listFood;
 
     public AdapterBillFood(Context context, List<BillInfo> data, List<Food> listFood) {
-        Log.d("ADAPTER", "AdapterBillFood: " + data==null?"data null":"co data");
+        if (data == null )
+            Log.d("BILLCHECKOUT", "AdapterBillFood: data null");
+        else if(listFood == null)
+            Log.d("BILLCHECKOUT", "AdapterBillFood: listfood null");
+        else {
+            Log.d("BILLCHECKOUT", "AdapterBillFood: data co san");
+
+        }
         this.context = context;
         this.data = data;
         this.listFood = listFood;
@@ -58,7 +65,7 @@ public class AdapterBillFood extends RecyclerView.Adapter<HolderFoodBill> {
     @Override
     public int getItemCount() {
         Log.d("BILLCHECKOUT", "getItemCount: " + data.size());
-        if (data == null) return 0;
+        if (data == null || listFood == null) return 0;
         else
             return data.size();
     }

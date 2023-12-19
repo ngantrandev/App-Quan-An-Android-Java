@@ -87,46 +87,6 @@ public class Bill implements Parcelable {
         this.seller = seller;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_id);
-        dest.writeString(timeCheckIn);
-        dest.writeString(timeCheckOut);
-        dest.writeString(note);
-        dest.writeInt(tips);
-        dest.writeInt(status);
-        dest.writeParcelable(table, flags);
-        dest.writeParcelable(seller, flags);
-    }
-
-    // Cần thêm constructor sau đây để đọc dữ liệu từ Parcel
-    protected Bill(Parcel in) {
-        _id = in.readString();
-        timeCheckIn = in.readString();
-        timeCheckOut = in.readString();
-        note = in.readString();
-        tips = in.readInt();
-        status = in.readInt();
-        table = in.readParcelable(Table.class.getClassLoader());
-        seller = in.readParcelable(Seller.class.getClassLoader());
-    }
-
-    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
-        @Override
-        public Bill createFromParcel(Parcel in) {
-            return new Bill(in);
-        }
-
-        @Override
-        public Bill[] newArray(int size) {
-            return new Bill[size];
-        }
-    };
 
     @Override
     public String toString() {
@@ -141,5 +101,51 @@ public class Bill implements Parcelable {
                 ", seller=" + seller +
                 ", billinfos=" + billinfos +
                 '}';
+    }
+
+    // Parcelable constructor
+    protected Bill(Parcel in) {
+        _id = in.readString();
+        timeCheckIn = in.readString();
+        timeCheckOut = in.readString();
+        note = in.readString();
+        tips = in.readInt();
+        status = in.readInt();
+        table = in.readParcelable(Table.class.getClassLoader());
+        seller = in.readParcelable(Seller.class.getClassLoader());
+        billinfos = in.createTypedArrayList(BillInfo.CREATOR);
+    }
+
+    // Creator for Parcelable
+    public static final Creator<Bill> CREATOR = new Creator<Bill>() {
+        @Override
+        public Bill createFromParcel(Parcel in) {
+            return new Bill(in);
+        }
+
+        @Override
+        public Bill[] newArray(int size) {
+            return new Bill[size];
+        }
+    };
+
+    // Write object values to Parcel
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(timeCheckIn);
+        dest.writeString(timeCheckOut);
+        dest.writeString(note);
+        dest.writeInt(tips);
+        dest.writeInt(status);
+        dest.writeParcelable(table, flags);
+        dest.writeParcelable(seller, flags);
+        dest.writeTypedList(billinfos);
+    }
+
+    // Describe the kinds of special objects contained in this Parcelable instance
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

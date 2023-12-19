@@ -1,6 +1,9 @@
 package com.example.quanlyquanan.model;
 
-public class BillInfo {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class BillInfo implements Parcelable {
     private String _id;
     private String bill;
     private String food;
@@ -51,5 +54,45 @@ public class BillInfo {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+
+
+    // Parcelable constructor
+    protected BillInfo(Parcel in) {
+        _id = in.readString();
+        bill = in.readString();
+        food = in.readString();
+        quantity = in.readInt();
+        price = in.readInt();
+    }
+
+    // Creator for Parcelable
+    public static final Creator<BillInfo> CREATOR = new Creator<BillInfo>() {
+        @Override
+        public BillInfo createFromParcel(Parcel in) {
+            return new BillInfo(in);
+        }
+
+        @Override
+        public BillInfo[] newArray(int size) {
+            return new BillInfo[size];
+        }
+    };
+
+    // Write object values to Parcel
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(bill);
+        dest.writeString(food);
+        dest.writeInt(quantity);
+        dest.writeInt(price);
+    }
+
+    // Describe the kinds of special objects contained in this Parcelable instance
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }
