@@ -40,7 +40,7 @@ public interface FoodApi {
     Call<ResponseFood> getFoods();
 
     @Multipart
-    @POST("/foods")
+    @POST("/foods/")
     Call<ResponseFoodById> postFood(
             @Part MultipartBody.Part file,
             @Part("name") String name,

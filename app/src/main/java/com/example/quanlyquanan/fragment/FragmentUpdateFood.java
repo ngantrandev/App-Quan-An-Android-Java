@@ -125,8 +125,14 @@ public class FragmentUpdateFood extends Fragment {
         btnIncrease = mView.findViewById(R.id.btn_increase_fragment_updatefood);
         btnDecrease = mView.findViewById(R.id.btn_decrease_fragment_updatefood);
 //
-        food = (Food) getArguments().getSerializable("food");
-        categoryList = (List<Category>) getArguments().get("category_list");
+//        food = (Food) getArguments().getSerializable("food");
+//        categoryList = (List<Category>) getArguments().get("category_list");
+
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            food = bundle.getParcelable("food");
+            categoryList = bundle.getParcelableArrayList("category_list");
+        }
 
         adapterSpinner = new AdapterSpinner(getContext(), R.layout.item_spinner_selected, categoryList);
         spinnerCategory.setAdapter(adapterSpinner);

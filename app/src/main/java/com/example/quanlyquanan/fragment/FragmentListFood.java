@@ -107,7 +107,7 @@ public class FragmentListFood extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 tempFoodList.clear();
                 Category category = categoryListLabel.get(position);
-                Toast.makeText(getContext(), "" + category.getName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "" + category.getName(), Toast.LENGTH_SHORT).show();
 
                 for(int i = 0;i<foodList.size();i++) {
                     Food food = foodList.get(i);

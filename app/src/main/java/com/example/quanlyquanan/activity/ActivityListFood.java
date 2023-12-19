@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -161,8 +162,8 @@ public class ActivityListFood extends AppCompatActivity {
 
 
         Bundle bundle = new Bundle();
-        bundle.putSerializable("category_list", (Serializable) categoryList);
-        bundle.putSerializable("food", (Serializable) targetFood);
+        bundle.putParcelableArrayList("category_list", new ArrayList<>(categoryList));
+        bundle.putParcelable("food", targetFood);
         fragmentUpdateFood.setArguments(bundle);
 
 
