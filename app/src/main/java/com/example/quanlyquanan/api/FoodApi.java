@@ -72,8 +72,8 @@ public interface FoodApi {
 //                                      @Part("status") String status,
 //                                      @Part("category") String category);
 
-        @PATCH("/foods/{id}")
-    Call<ResponseFoodById> updateFood(@Path("id")String id, @Body UpdateFood updateFood);
+    @PATCH("/foods/{id}")
+    Call<ResponseFoodById> updateFood(@Path("id") String id, @Body UpdateFood updateFood);
 //    @Multipart
 //    @PATCH("/foods/{id}")
 //    Call<ResponseFoodById> updateFood(

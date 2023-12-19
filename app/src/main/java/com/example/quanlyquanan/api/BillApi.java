@@ -2,10 +2,12 @@ package com.example.quanlyquanan.api;
 
 import com.example.quanlyquanan.model.Bill;
 import com.example.quanlyquanan.model.MyDate;
+import com.example.quanlyquanan.model.UpdateFood;
 import com.example.quanlyquanan.response.ResponseAmount;
 import com.example.quanlyquanan.response.ResponseBill;
 import com.example.quanlyquanan.response.ResponseBillById;
 import com.example.quanlyquanan.response.ResponseBillInfoById;
+import com.example.quanlyquanan.response.ResponseFoodById;
 import com.example.quanlyquanan.setting.MyApplication;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -55,4 +57,5 @@ public interface BillApi {
 
     @PATCH("/bills/{id}")
     Call<ResponseBillById> thanhtoan(@Path("id") String id, @Body Bill bill);
+
 }

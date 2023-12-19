@@ -102,18 +102,8 @@ public class activity_show_bill_table extends AppCompatActivity {
         btnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnCheck.setVisibility(View.GONE);
-                iconcheck.setVisibility(View.VISIBLE);
+                thanhToan();
 
-//                thanhToan();
-//                Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-////                        Manager.ReturnTable(idtable);
-//                        openTableMenu();
-//                    }
-//                }, 2000);
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -156,13 +146,27 @@ public class activity_show_bill_table extends AppCompatActivity {
     }
 
     private void thanhToan() {
-
-        int tip = Integer.parseInt(TipInput.getText().toString());
+        int tip = 0;
+//        try {
+        if (TipInput.getText().toString().trim().length() > 0)
+            tip = Integer.parseInt(TipInput.getText().toString());
         mBill.setTips(tip);
+        Log.d("BILLCHECKOUT", "onResponse: truoc khi call" );
         BillApi.billApi.thanhtoan(mBill.get_id(), mBill).enqueue(new Callback<ResponseBillById>() {
             @Override
             public void onResponse(Call<ResponseBillById> call, Response<ResponseBillById> response) {
-                openTableMenu();
+
+                btnCheck.setVisibility(View.GONE);
+                iconcheck.setVisibility(View.VISIBLE);
+                Log.d("BILLCHECKOUT", "onResponse: da call api thanh cong" );
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//                        Manager.ReturnTable(idtable);
+                        openTableMenu();
+                    }
+                }, 2000);
             }
 
             @Override
@@ -171,6 +175,10 @@ public class activity_show_bill_table extends AppCompatActivity {
                 Toast.makeText(activity_show_bill_table.this, "Khong the thanh toan", Toast.LENGTH_LONG).show();
             }
         });
+//        }
+//        catch (Exception e) {
+//            Log.d("BILLCHECKOUT", "exception: " + e);
+//        }
     }
 
     private void setcontrol() {

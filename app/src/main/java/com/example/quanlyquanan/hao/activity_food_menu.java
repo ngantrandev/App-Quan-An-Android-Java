@@ -156,12 +156,13 @@ public class activity_food_menu extends AppCompatActivity {
 
                                 mBill = newBill;
 
+                                Log.d("CREATEBILL", "onResponse: tao bill thanh con");
                                 notifyBillAvaiable();
                             }
                         } else {
                             Toast.makeText(activity_food_menu.this, "TAO BILL THAT BAI " + response.body().getError(), Toast.LENGTH_SHORT).show();
-                            Log.d("TAG", "onResponse: " + "TAO BILL THAT BAI " + response.body().getError());
-                            Log.d("TAG", "onResponse: " + "TAO BILL THAT BAI " + response.body().getMessage());
+                            Log.d("CREATEBILL", "onResponse: " + "TAO BILL THAT BAI " + response.body().getError());
+                            Log.d("CREATEBILL", "onResponse: " + "TAO BILL THAT BAI " + response.body().getMessage());
                         }
                     }
 
