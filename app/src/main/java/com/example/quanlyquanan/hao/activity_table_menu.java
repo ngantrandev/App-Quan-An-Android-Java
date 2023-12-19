@@ -59,15 +59,15 @@ public class activity_table_menu extends AppCompatActivity {
         loadTableList();
         Log.d("TAG", "setcontrol: activity table menu");
     }
-    @Override
-    public void onBackPressed() {
-        int count = 1;
-        if (count == 0) {
-            super.onBackPressed();
-            //additional code
-        }
-
-    }
+//    @Override
+//    public void onBackPressed() {
+//        int count = 1;
+//        if (count == 0) {
+//            super.onBackPressed();
+//            //additional code
+//        }
+//
+//    }
     private void createOptionFilter(){
         FilterOption.add("Tăng dần");
         FilterOption.add("Giảm dần");
@@ -84,6 +84,13 @@ public class activity_table_menu extends AppCompatActivity {
 //
 //            }
 //        });
+        findViewById(R.id.tableMenuBtnBack).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity_table_menu.this.finish();
+            }
+        });
+
         FilterBtn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
