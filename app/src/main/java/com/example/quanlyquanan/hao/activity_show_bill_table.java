@@ -155,18 +155,28 @@ public class activity_show_bill_table extends AppCompatActivity {
         BillApi.billApi.thanhtoan(mBill.get_id(), mBill).enqueue(new Callback<ResponseBillById>() {
             @Override
             public void onResponse(Call<ResponseBillById> call, Response<ResponseBillById> response) {
-
-                btnCheck.setVisibility(View.GONE);
-                iconcheck.setVisibility(View.VISIBLE);
-                Log.d("BILLCHECKOUT", "onResponse: da call api thanh cong" );
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+                Log.d("BILLCHECKOUT", "onResponse: server tra ve ket qua" );
+                if(response.isSuccessful()) {
+                    if(response.body().getStatus().equals("Success")){
+                        btnCheck.setVisibility(View.GONE);
+                        iconcheck.setVisibility(View.VISIBLE);
+                        Log.d("BILLCHECKOUT", "onResponse: da call api thanh cong" );
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
 //                        Manager.ReturnTable(idtable);
-                        openTableMenu();
+                                openTableMenu();
+                            }
+                        }, 2000);
                     }
-                }, 2000);
+
+                    else {
+                        Log.d("BILLCHECKOUT", "cap nhat that bai" );
+                        Toast.makeText(activity_show_bill_table.this, response.body().getError(), Toast.LENGTH_LONG).show();
+                    }
+                }
+
             }
 
             @Override

@@ -26,9 +26,14 @@ import com.example.quanlyquanan.model.Table;
 import com.example.quanlyquanan.response.ResponseBillById;
 import com.example.quanlyquanan.response.ResponseFood;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,11 +87,10 @@ public class activity_food_menu extends AppCompatActivity {
 
             if (mtable.getBill().equals("")) {
                 Log.d("TAG", "onCreate: table khong cos bill");
-                Log.d("TAG", "onCreate: " + mtable.getBill());
                 createNewBill();
             } else {
                 Log.d("TAG", "onCreate: table cos bill");
-                loadBillById();
+                loadBillById(mtable.getBill());
             }
         }
 
@@ -95,8 +99,8 @@ public class activity_food_menu extends AppCompatActivity {
         setevent();
     }
 
-    private void loadBillById() {
-        BillApi.billApi.getBillById(mtable.getBill()).enqueue(new Callback<ResponseBillById>() {
+    private void loadBillById(String billId) {
+        BillApi.billApi.getBillById(billId).enqueue(new Callback<ResponseBillById>() {
             @Override
             public void onResponse(Call<ResponseBillById> call, Response<ResponseBillById> response) {
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
@@ -113,9 +117,6 @@ public class activity_food_menu extends AppCompatActivity {
                     } catch (Exception e) {
                         Log.d("BILLLOAD", "onResponse: " + e);
                     }
-
-                    Log.d("BILLLOAD", "da load duoc bill voi " + mBill.toString());
-                    Toast.makeText(activity_food_menu.this, "Da load duoc bill", Toast.LENGTH_SHORT).show();
                     notifyBillAvaiable();
 
                 } else {
@@ -134,12 +135,12 @@ public class activity_food_menu extends AppCompatActivity {
     }
 
     private void createNewBill() {
-        int timeCheckIn = getCurrenTime();
+        long timeCheckIn = getCurrenTime();
         String tableId = mtable.get_id();
         String sellerId = getUserId();
 
-        Toast.makeText(this, "Create bill " + timeCheckIn + "   " + tableId + "  " + sellerId, Toast.LENGTH_SHORT).show();
-        Log.d("TAG", "createNewBill: tableinfo truoc callapi" + mtable.toString());
+//        Toast.makeText(this, "Create bill " + timeCheckIn + "   " + tableId + "  " + sellerId, Toast.LENGTH_SHORT).show();
+        Log.d("CREATEBILL", "createNewBill: tableinfo truoc callapi" + mtable.toString());
 
 
         BillApi.billApi.createNewBill(String.valueOf(timeCheckIn),
@@ -154,10 +155,13 @@ public class activity_food_menu extends AppCompatActivity {
                                 Bill newBill = response.body().getBill();
                                 mtable.setBill(newBill.get_id());
 
+                                Log.d("CREATEBILL", "onResponse: newbill" + newBill.toString());
                                 mBill = newBill;
 
                                 Log.d("CREATEBILL", "onResponse: tao bill thanh con");
                                 notifyBillAvaiable();
+
+                                loadBillById(newBill.get_id());
                             }
                         } else {
                             Toast.makeText(activity_food_menu.this, "TAO BILL THAT BAI " + response.body().getError(), Toast.LENGTH_SHORT).show();
@@ -168,7 +172,7 @@ public class activity_food_menu extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ResponseBillById> call, Throwable t) {
-                        Log.d("TAG", "createNewBill: tableinfo callapi that bai" + mtable.toString());
+                        Log.d("CREATEBILL", "createNewBill: tableinfo callapi that bai" + mtable.toString());
                         openTableMenu();
                         Toast.makeText(activity_food_menu.this, "May chu dang BAN", Toast.LENGTH_SHORT).show();
                     }
@@ -373,14 +377,15 @@ public class activity_food_menu extends AppCompatActivity {
         foodAdapter.notifyDataSetChanged();
     }
 
-    private int getCurrenTime() {
-        // Getting the current date from Calendar class.
-        Calendar calendar = Calendar.getInstance();
+    private long getCurrenTime() {
+        // Chọn múi giờ (Ví dụ: UTC+0)
+        TimeZone timeZone = TimeZone.getTimeZone("UTC+7");
 
-        // Getting the time in milliseconds.
-        int milliSeconds = (int) calendar.getTimeInMillis();
+        // Lấy thời gian hiện tại với múi giờ chỉ định
+        long currentTimeMillis = System.currentTimeMillis();
+        long currentTimeMillisInTimeZone = currentTimeMillis + timeZone.getRawOffset();
 
-        return milliSeconds;
+        return currentTimeMillisInTimeZone;
     }
 
     private String getUserId() {
