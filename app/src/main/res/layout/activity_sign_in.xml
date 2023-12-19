@@ -21,7 +21,7 @@
             android:layout_width="170dp"
             android:layout_height="170dp"
             android:layout_marginTop="36dp"
-            android:src="@drawable/img_avatar"
+            android:src="@drawable/logoapp"
             app:civ_border_width="1.5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
@@ -51,8 +51,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5">
-
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/labelErrorLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:textColor="@color/red"
+                />
             <EditText
+                android:id="@+id/InputUsername"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="20dp"
@@ -63,6 +73,7 @@
                 android:paddingLeft="15dp" />
 
             <EditText
+                android:id="@+id/InputPassword"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="20dp"
@@ -73,6 +84,7 @@
                 android:paddingLeft="15dp" />
 
             <Button
+                android:id="@+id/btnlogin"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_width="match_parent"

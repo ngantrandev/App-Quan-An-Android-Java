@@ -1,8 +1,14 @@
 package com.example.quanlyquanan.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
-public class User {
+
+public class User implements Parcelable {
     private String _id, username, password, sex, imgUrl, role, email, sdt;
 
     @SerializedName("first_name")
@@ -28,6 +34,33 @@ public class User {
         this.birthDay = birthDay;
         this.status = 1;
     }
+
+    protected User(Parcel in) {
+        _id = in.readString();
+        username = in.readString();
+        password = in.readString();
+        sex = in.readString();
+        imgUrl = in.readString();
+        role = in.readString();
+        email = in.readString();
+        sdt = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        birthDay = in.readString();
+        status = in.readInt();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String get_id() {
         return _id;
@@ -123,5 +156,27 @@ public class User {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(username);
+        dest.writeString(password);
+        dest.writeString(sex);
+        dest.writeString(imgUrl);
+        dest.writeString(role);
+        dest.writeString(email);
+        dest.writeString(sdt);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(birthDay);
+        dest.writeInt(status);
     }
 }

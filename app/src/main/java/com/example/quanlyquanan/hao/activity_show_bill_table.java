@@ -83,6 +83,7 @@ public class activity_show_bill_table extends AppCompatActivity {
                 if (mBill == null) {
                     // Bạn có thể sử dụng đối tượng ở đây
                     openFoodMenu();
+                    this.finish();
                     return;
                 }
 

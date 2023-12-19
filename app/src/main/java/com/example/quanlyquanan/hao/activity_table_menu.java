@@ -1,5 +1,6 @@
 package com.example.quanlyquanan.hao;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.activity.MainActivity;
+import com.example.quanlyquanan.activity.StartActivity;
 import com.example.quanlyquanan.api.TableApi;
 import com.example.quanlyquanan.model.Table;
 import com.example.quanlyquanan.response.ResponseTable;
@@ -87,6 +90,8 @@ public class activity_table_menu extends AppCompatActivity {
         findViewById(R.id.tableMenuBtnBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(activity_table_menu.this, MainActivity.class);
+                activity_table_menu.this.startActivity(intent);
                 activity_table_menu.this.finish();
             }
         });

@@ -153,13 +153,13 @@ public class AdapterFood extends RecyclerView.Adapter<HolderFood> {
 //                Manager.MinusFood(food.getFoodId(),idtable);
 
                 BillInfo billInfo = findBillInfo(mBill.getBillinfos(), food.get_id());
-
-
                 if (billInfo != null) {
                     if (billInfo.getQuantity() > 0) {
-
                         billInfo.setQuantity(billInfo.getQuantity() - 1);
                         food.setSoLuongTon(food.getSoLuongTon() + 1);
+                        if(billInfo.getQuantity()==0){
+                            mBill.getBillinfos().remove(billInfo);
+                        }
                         notifyDataSetChanged();
                     }
                 }

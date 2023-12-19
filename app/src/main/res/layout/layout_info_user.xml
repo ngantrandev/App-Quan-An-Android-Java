@@ -121,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView47" />
 
     <TextView
-        android:id="@+id/textView49"
+        android:id="@+id/LabelUName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -133,43 +133,43 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/textView50"
+        android:id="@+id/LabelUBirth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView45"
-        app:layout_constraintStart_toStartOf="@+id/textView49"
+        app:layout_constraintStart_toStartOf="@+id/LabelUName"
         app:layout_constraintTop_toTopOf="@+id/textView45" />
 
     <TextView
-        android:id="@+id/textView51"
+        android:id="@+id/LabelUSex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView46"
-        app:layout_constraintStart_toStartOf="@+id/textView50"
+        app:layout_constraintStart_toStartOf="@+id/LabelUBirth"
         app:layout_constraintTop_toTopOf="@+id/textView46" />
 
     <TextView
-        android:id="@+id/textView52"
+        android:id="@+id/LabelUEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView47"
-        app:layout_constraintStart_toStartOf="@+id/textView51"
+        app:layout_constraintStart_toStartOf="@+id/LabelUSex"
         app:layout_constraintTop_toTopOf="@+id/textView47" />
 
     <TextView
-        android:id="@+id/textView53"
+        android:id="@+id/LabelUPhone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/textView48"
-        app:layout_constraintStart_toStartOf="@+id/textView52"
+        app:layout_constraintStart_toStartOf="@+id/LabelUEmail"
         app:layout_constraintTop_toTopOf="@+id/textView48" />
 
     <Button
@@ -184,7 +184,7 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView53" />
+        app:layout_constraintTop_toBottomOf="@+id/LabelUPhone" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageView7"

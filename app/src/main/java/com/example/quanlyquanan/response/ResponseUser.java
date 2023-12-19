@@ -6,9 +6,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class ResponseUser {
-    private String message, status, error;
+    private String message, status, error,access_token;
     private int count;
-
     @SerializedName("users")
     private List<User> userList;
 
