@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.adapter.AdapterListFood;
 import com.example.quanlyquanan.model.Bill;
+import com.example.quanlyquanan.model.Food;
 import com.example.quanlyquanan.model.Table;
 
 import java.text.DecimalFormat;
@@ -33,14 +35,15 @@ public class activity_show_bill_table extends AppCompatActivity {
     ImageButton btnBack;
     Button btnCheck;
     Bill mBill;
+    List<Food> mFoodList;
     Table mTable;
     LinearLayout iconcheck;
     Date currentTime;
-    int idtable, PriceBill, Total, tip;
+    int PriceBill, Total, tip;
     EditText TipInput;
     List<FoodInfo> DsFoodBill = new ArrayList<>();
-    RecyclerView Foodlv;
-    AdapterBillFood FoodbillAdapter;
+    RecyclerView recyclerViewFood;
+    AdapterBillFood adapterBillFood;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,20 +67,27 @@ public class activity_show_bill_table extends AppCompatActivity {
 //            openTableMenu();
 //        }
 
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("table") && intent.hasExtra("bill")) {
-            mBill =intent.getParcelableExtra("bill");
-            mTable =  intent.getParcelableExtra("table");
-            if (mBill == null) {
-                // Bạn có thể sử dụng đối tượng ở đây
-                openFoodMenu();
-                return;
+        try{
+            Intent intent = getIntent();
+            if (intent != null && intent.hasExtra("table") && intent.hasExtra("bill") && intent.hasExtra("foodlist")) {
+                mBill = intent.getParcelableExtra("bill");
+                mTable = intent.getParcelableExtra("table");
+                mFoodList = intent.getParcelableArrayListExtra("foodlist");
+                if (mBill == null) {
+                    // Bạn có thể sử dụng đối tượng ở đây
+                    openFoodMenu();
+                    return;
+                }
+
+                currentTime = Calendar.getInstance().getTime();
+                setcontrol();
+//        setevent();
             }
+        } catch (Exception e){
+            Log.d("BILLCHECKOUT", "onCreate: " +e);
         }
 //
-//        currentTime = Calendar.getInstance().getTime();
-//        setcontrol();
-//        setevent();
+
     }
 
     private void setevent() {
@@ -91,7 +101,7 @@ public class activity_show_bill_table extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Manager.ReturnTable(idtable);
+//                        Manager.ReturnTable(idtable);
                         openTableMenu();
                     }
                 }, 2000);
@@ -144,13 +154,25 @@ public class activity_show_bill_table extends AppCompatActivity {
         billPriceTV = findViewById(R.id.billTablePrice);
         billTotalTV = findViewById(R.id.billTableTotal);
         billIdTable = findViewById(R.id.BillIdTable);
-        Foodlv = findViewById(R.id.BillFoodLv);
-        FoodbillAdapter = new AdapterBillFood(this, DsFoodBill, idtable);
-        Foodlv.setAdapter(FoodbillAdapter);
+        recyclerViewFood = findViewById(R.id.BillFoodLv);
         TipInput = findViewById(R.id.billTableInputTip);
-        CheckFood();
-        billIdTable.setText((idtable + 1) + "");
-        Foodlv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        billIdTable.setText(mTable.getTableName());
+
+
+
+        adapterBillFood = new AdapterBillFood(this, mBill.getBillinfos(), mFoodList);
+
+        try{
+            recyclerViewFood.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        }catch (Exception e){
+            Log.d("BILLCHECKOUT", "setlayout" + e);
+        }
+//        recyclerViewFood.setAdapter(adapterBillFood);
+//        CheckFood();
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+//        recyclerViewFood.setLayoutManager(linearLayoutManager);
+        recyclerViewFood.setAdapter(adapterBillFood);
+        adapterBillFood.notifyDataSetChanged();
     }
 
     void openFoodMenu() {

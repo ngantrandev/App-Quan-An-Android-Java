@@ -38,10 +38,8 @@ public class activity_food_menu extends AppCompatActivity {
 
     Table mtable;
     Bill mBill;
-    int idtable = 0;
     Button exportbtn;
     ImageButton btnBack;
-    TableInfo table;
     List<Food> dsFood = new ArrayList<>();
     List<Food> dsFoodFilter = new ArrayList<>();
     SearchView btnsearch;
@@ -102,27 +100,27 @@ public class activity_food_menu extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBillById> call, Response<ResponseBillById> response) {
                 if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
-                    try{
+                    try {
                         mBill = response.body().getBill();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("BILLLOAD", "onResponse: bill" + e);
                     }
 
-                    try{
+                    try {
                         foodAdapter = new AdapterFood(activity_food_menu.this, dsFoodFilter, mBill);
                         foodMenuLv.setAdapter(foodAdapter);
                         foodMenuLv.setLayoutManager(new LinearLayoutManager(activity_food_menu.this, LinearLayoutManager.VERTICAL, false));
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         Log.d("BILLLOAD", "onResponse: " + e);
                     }
 
                     Log.d("BILLLOAD", "da load duoc bill voi " + mBill.toString());
-                    Toast.makeText(activity_food_menu.this, "Da load duoc bill",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity_food_menu.this, "Da load duoc bill", Toast.LENGTH_SHORT).show();
                     notifyBillAvaiable();
 
                 } else {
                     Toast.makeText(activity_food_menu.this, "Khong tim thay bill", Toast.LENGTH_SHORT).show();
-//                    openTableMenu();
+                    openTableMenu();
                 }
             }
 
@@ -153,12 +151,12 @@ public class activity_food_menu extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             if (response.body().getStatus().equals("Success")) {
 
-//                            Bill newBill = response.body().getBill();
-//                            mtable.setBill(newBill.get_id());
-//
-//                            mBill = newBill;
-//
-//                            notifyBillAvaiable();
+                                Bill newBill = response.body().getBill();
+                                mtable.setBill(newBill.get_id());
+
+                                mBill = newBill;
+
+                                notifyBillAvaiable();
                             }
                         } else {
                             Toast.makeText(activity_food_menu.this, "TAO BILL THAT BAI " + response.body().getError(), Toast.LENGTH_SHORT).show();
@@ -177,9 +175,9 @@ public class activity_food_menu extends AppCompatActivity {
     }
 
     private void notifyBillAvaiable() {
-        Log.d("TAG", "notifyBillAvaiable: " +mBill);
+        Log.d("TAG", "notifyBillAvaiable: " + mBill);
         foodAdapter.notifyDataSetChanged();
-        Log.d("TAG", "sau khi notify: " +mBill);
+        Log.d("TAG", "sau khi notify: " + mBill);
     }
 
 
@@ -280,21 +278,18 @@ public class activity_food_menu extends AppCompatActivity {
         exportbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("TAG", "onclick: show bill table");
-                openbillTable();
+                if(mBill.getBillinfos().size()==0){
+                    Toast.makeText(activity_food_menu.this, "Danh sách món ăn trống", Toast.LENGTH_LONG).show();
+                }else {
+                    Log.d("TAG", "onclick: show bill table");
+                    openbillTable();
+                }
             }
         });
     }
 
     private void OrderCheck() {
-        boolean count = false;
-        for (FoodInfo f : table.getDsFoodSelection()) {
-            if (f.getFoodSelAmount() > 0) {
-                count = true;
-                break;
-            }
-        }
-        if (count) {
+        if (mBill.getBillinfos().size()>0) {
             exportbtn.setVisibility(View.VISIBLE);
         } else {
             exportbtn.setVisibility(View.GONE);
@@ -321,6 +316,7 @@ public class activity_food_menu extends AppCompatActivity {
             Intent intent = new Intent(activity_food_menu.this, activity_show_bill_table.class);
             intent.putExtra("bill", mBill);
             intent.putExtra("table", mtable);
+            intent.putParcelableArrayListExtra("foodlist", new ArrayList<>(dsFood));
 //        intent.putExtra("dsFood", (Serializable) dsfood);
             this.startActivity(intent);
         } catch (Exception e) {
@@ -345,7 +341,7 @@ public class activity_food_menu extends AppCompatActivity {
 //                    if (Manager.getFoodRemaining(Manager.FindIdFoodInTable(f.get_id())) > 0) {
 //                        dsFoodFilter.add(f);
 //                    }
-                    if(f.getSoLuongTon() > 0)
+                    if (f.getSoLuongTon() > 0)
                         dsFoodFilter.add(f);
                 }
                 break;
@@ -356,20 +352,22 @@ public class activity_food_menu extends AppCompatActivity {
 //                    if (Manager.getFoodRemaining(Manager.FindIdFoodInTable(f.get_id())) < 1) {
 //                        dsFoodFilter.add(f);
 //                    }
-                    if(f.getSoLuongTon()==0)
+                    if (f.getSoLuongTon() == 0)
                         dsFoodFilter.add(f);
                 }
                 break;
             }
 //            //Đã chọn
-//            case 3: {
+            case 3: {
 //                for (Food f : dsFood) {
 //                    if (f.getFoodSelAmount() > 0) {
 //                        dsFoodFilter.add(f);
 //                    }
 //                }
-//                break;
-//            }
+
+                dsFoodFilter.addAll(Food.filterListFoodInListBillInfo(mBill.getBillinfos(), dsFood));
+                break;
+            }
         }
         foodAdapter.notifyDataSetChanged();
     }
@@ -388,12 +386,12 @@ public class activity_food_menu extends AppCompatActivity {
         return "654905e6e9cdc122868b778b";
     }
 
-    private void loadFoodList(){
+    private void loadFoodList() {
         FoodApi.foodApi.getFoods().enqueue(new Callback<ResponseFood>() {
             @Override
             public void onResponse(Call<ResponseFood> call, Response<ResponseFood> response) {
-                if(response.isSuccessful()){
-                    if(response.body().getStatus().equals("Success")){
+                if (response.isSuccessful()) {
+                    if (response.body().getStatus().equals("Success")) {
                         dsFood.clear();
                         dsFood.addAll(response.body().getFoodList());
 //                        dsFoodFilter.clear();

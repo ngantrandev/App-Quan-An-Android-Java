@@ -1,8 +1,13 @@
 package com.example.quanlyquanan.model;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Food implements Serializable {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Food implements Parcelable {
     String _id, name, description, imgUrl;
     int price, soLuongTon, status;
     float discount;
@@ -112,6 +117,77 @@ public class Food implements Serializable {
             return (int) (price * (1 - discount / 100));
         }
 
+    }
+
+    // loc danh sach mon an trong ds billinfo
+    public static List<Food> filterListFoodInListBillInfo(List<BillInfo> billInfoList, List<Food> foodList) {
+        List<Food> filterFoodList = new ArrayList<>();
+
+        for (BillInfo billinfo : billInfoList) {
+            for (Food food : foodList) {
+                if (billinfo.getFood().equals(food.get_id())) {
+                    filterFoodList.add(food);
+                }
+            }
+        }
+
+        return filterFoodList;
+    }
+
+    public static Food findFoodById(String foodId, List<Food> foodList){
+        for (Food food: foodList) {
+            if(food.get_id().equals(foodId))
+                return food;
+        }
+
+        return null;
+    }
+
+
+    // Phương thức để đọc dữ liệu từ Parcel
+    protected Food(Parcel in) {
+        _id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        imgUrl = in.readString();
+        price = in.readInt();
+        soLuongTon = in.readInt();
+        status = in.readInt();
+        discount = in.readFloat();
+        category = in.readParcelable(Category.class.getClassLoader());
+    }
+
+    // Phương thức để tạo một đối tượng Parcel từ Food
+    public static final Creator<Food> CREATOR = new Creator<Food>() {
+        @Override
+        public Food createFromParcel(Parcel in) {
+            return new Food(in);
+        }
+
+        @Override
+        public Food[] newArray(int size) {
+            return new Food[size];
+        }
+    };
+
+    // Phương thức để ghi dữ liệu vào Parcel
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(imgUrl);
+        dest.writeInt(price);
+        dest.writeInt(soLuongTon);
+        dest.writeInt(status);
+        dest.writeFloat(discount);
+        dest.writeParcelable(category, flags);
+    }
+
+    // Phương thức để định nghĩa kích thước của đối tượng Parcel
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
 }
