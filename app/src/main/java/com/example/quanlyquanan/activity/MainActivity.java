@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 if(user.getFirstName().equals("null")&& user.getLastName().equals("null")){
                     labelName.setText("Chưa có tên");
                 }
-                labelRole.setText(user.getRole().toString());
+                labelRole.setText(user.getRole().equals("1")?"Chức vụ: Quản lý": "Chức vụ: Nhân viên");
                 btnBack.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
