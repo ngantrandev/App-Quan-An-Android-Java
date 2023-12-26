@@ -42,6 +42,8 @@
 
     </LinearLayout>
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="500dp"
@@ -53,144 +55,156 @@
         tools:layout_editor_absoluteX="-16dp">
 
 
-        <LinearLayout
-            android:id="@+id/group_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="70dp"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            >
-
-            <ImageButton
-                android:id="@+id/btn_showfood_activitymain"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/border_background_button_activitymain"
-                android:src="@drawable/ic_food" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Món ăn"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/group_btn_show_category_mainactivity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/group_1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/group_1"
-            app:layout_constraintTop_toTopOf="@+id/group_1"
-            app:layout_constraintVertical_bias="0.0">
-
-            <ImageButton
-                android:id="@+id/btn_show_category_mainactivity"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/border_background_button_activitymain"
-                android:src="@drawable/ic_tag" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Loại món"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/group_btn_thongke_mainactivity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="@+id/group_1"
-
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/group_1"
-            app:layout_constraintTop_toBottomOf="@+id/group_1">
-
-            <ImageButton
-                android:id="@+id/btn_thongke_mainactivity"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/border_background_button_activitymain"
-                android:src="@drawable/ic_chart" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thống kê"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/group_btn_show_tablelist_mainactivity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/group_btn_thongke_mainactivity"
-            app:layout_constraintEnd_toEndOf="@+id/group_btn_show_category_mainactivity"
-
-            app:layout_constraintStart_toStartOf="@+id/group_btn_show_category_mainactivity"
-            app:layout_constraintTop_toTopOf="@+id/group_btn_thongke_mainactivity">
-
-            <ImageButton
-                android:id="@+id/btn_show_tablelist_mainactivity"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/border_background_button_activitymain"
-                android:contentDescription="TODO"
-                android:src="@drawable/ic_table" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bàn ăn"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/group_btn_dat_ban"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
+        <GridView
             android:layout_marginTop="20dp"
-            app:layout_constraintEnd_toEndOf="@+id/group_btn_thongke_mainactivity"
-            app:layout_constraintStart_toStartOf="@+id/group_btn_thongke_mainactivity"
-            app:layout_constraintTop_toBottomOf="@+id/group_btn_thongke_mainactivity">
+            android:id="@+id/gridview_menu_mainactivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="2"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/btnDatbanactivityMain"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/border_background_button_activitymain"
-                android:contentDescription="TODO"
-                android:src="@drawable/ic_table" />
+<!--        <LinearLayout-->
+<!--            android:id="@+id/group_1"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="70dp"-->
+<!--            android:layout_marginTop="40dp"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Đặt bàn"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+<!--            >-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn_showfood_activitymain"-->
+<!--                android:layout_width="80dp"-->
+<!--                android:layout_height="80dp"-->
+<!--                android:background="@drawable/border_background_button_activitymain"-->
+<!--                android:src="@drawable/ic_food" />-->
+
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Món ăn"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/group_btn_show_category_mainactivity"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/group_1"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/group_1"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/group_1"-->
+<!--            app:layout_constraintVertical_bias="0.0">-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn_show_category_mainactivity"-->
+<!--                android:layout_width="80dp"-->
+<!--                android:layout_height="80dp"-->
+<!--                android:background="@drawable/border_background_button_activitymain"-->
+<!--                android:src="@drawable/ic_tag" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Loại món"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/group_btn_thongke_mainactivity"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="44dp"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/group_1"-->
+
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/group_1"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/group_1">-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn_thongke_mainactivity"-->
+<!--                android:layout_width="80dp"-->
+<!--                android:layout_height="80dp"-->
+<!--                android:background="@drawable/border_background_button_activitymain"-->
+<!--                android:src="@drawable/ic_chart" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Thống kê"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/group_btn_show_tablelist_mainactivity"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/group_btn_thongke_mainactivity"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/group_btn_show_category_mainactivity"-->
+
+<!--            app:layout_constraintStart_toStartOf="@+id/group_btn_show_category_mainactivity"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/group_btn_thongke_mainactivity">-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/btn_show_tablelist_mainactivity"-->
+<!--                android:layout_width="80dp"-->
+<!--                android:layout_height="80dp"-->
+<!--                android:background="@drawable/border_background_button_activitymain"-->
+<!--                android:contentDescription="TODO"-->
+<!--                android:src="@drawable/ic_table" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Bàn ăn"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/group_btn_dat_ban"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/group_btn_thongke_mainactivity"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/group_btn_thongke_mainactivity"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/group_btn_thongke_mainactivity">-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/btnDatbanactivityMain"-->
+<!--                android:layout_width="80dp"-->
+<!--                android:layout_height="80dp"-->
+<!--                android:background="@drawable/border_background_button_activitymain"-->
+<!--                android:contentDescription="TODO"-->
+<!--                android:src="@drawable/ic_table" />-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Đặt bàn"-->
+<!--                android:textSize="18sp"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
