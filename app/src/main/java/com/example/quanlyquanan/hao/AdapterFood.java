@@ -16,20 +16,32 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.api.ApiError;
+import com.example.quanlyquanan.api.BillInfoApi;
 import com.example.quanlyquanan.model.Bill;
 import com.example.quanlyquanan.model.BillInfo;
 import com.example.quanlyquanan.model.Food;
+import com.example.quanlyquanan.response.ResponseBillInfoById;
 import com.example.quanlyquanan.setting.MyApplication;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdapterFood extends RecyclerView.Adapter<HolderFood> {
     Context context;
@@ -133,17 +145,11 @@ public class AdapterFood extends RecyclerView.Adapter<HolderFood> {
 
                 BillInfo billInfo = findBillInfo(mBill.getBillinfos(), food.get_id());
 
-                if (food.getSoLuongTon() > 0) {
-                    if (billInfo != null) {
-                        billInfo.setQuantity(billInfo.getQuantity() + 1);
-                    } else {
+                if (billInfo != null) {
+                    increaseBillInfoSize(mBill, billInfo, food);
 
-                        BillInfo newBillInfo = new BillInfo(mBill.get_id(), food.get_id(), 1, food.getNewPrice());
-                        mBill.getBillinfos().add(newBillInfo);
-                    }
-
-                    food.setSoLuongTon(food.getSoLuongTon() - 1);
-                    notifyDataSetChanged();
+                } else {
+                    createBillInfo(mBill, food);
                 }
             }
         });
@@ -153,15 +159,9 @@ public class AdapterFood extends RecyclerView.Adapter<HolderFood> {
 //                Manager.MinusFood(food.getFoodId(),idtable);
 
                 BillInfo billInfo = findBillInfo(mBill.getBillinfos(), food.get_id());
-                if (billInfo != null) {
-                    if (billInfo.getQuantity() > 0) {
-                        billInfo.setQuantity(billInfo.getQuantity() - 1);
-                        food.setSoLuongTon(food.getSoLuongTon() + 1);
-                        if(billInfo.getQuantity()==0){
-                            mBill.getBillinfos().remove(billInfo);
-                        }
-                        notifyDataSetChanged();
-                    }
+
+                if (billInfo != null && billInfo.getQuantity() > 0) {
+                    decreaseBillInfoSize(mBill, billInfo, food);
                 }
             }
         });
@@ -229,5 +229,119 @@ public class AdapterFood extends RecyclerView.Adapter<HolderFood> {
         }
 
         return null;
+    }
+
+    private void decreaseBillInfoSize(Bill bill, BillInfo billInfo, Food food) {
+
+        BillInfo tempBillInfo = new BillInfo(billInfo.get_id(), food.get_id(), -1, billInfo.getPrice()); // so -1 la giam billinfo size
+
+        BillInfoApi.billInfoApi.updateBillInfo(billInfo.get_id(), tempBillInfo).enqueue(new Callback<ResponseBillInfoById>() {
+            @Override
+            public void onResponse(Call<ResponseBillInfoById> call, Response<ResponseBillInfoById> response) {
+                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+                    try {
+                        BillInfo newBillInfo = response.body().getBillInfo();
+
+                        if (newBillInfo != null) {
+                            billInfo.setQuantity(newBillInfo.getQuantity());
+                            food.setSoLuongTon(food.getSoLuongTon() + 1);
+                            notifyDataSetChanged();
+
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    showErrorResponse(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBillInfoById> call, Throwable t) {
+                showFailedResponse();
+            }
+        });
+    }
+
+    private void increaseBillInfoSize(Bill bill, BillInfo billInfo, Food food) {
+
+        BillInfo tempBillInfo = new BillInfo(billInfo.get_id(), food.get_id(), 1, billInfo.getPrice()); // so 1 la tang billinfo size
+
+        BillInfoApi.billInfoApi.updateBillInfo(billInfo.get_id(), tempBillInfo).enqueue(new Callback<ResponseBillInfoById>() {
+            @Override
+            public void onResponse(Call<ResponseBillInfoById> call, Response<ResponseBillInfoById> response) {
+                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+                    try {
+                        BillInfo newBillInfo = response.body().getBillInfo();
+
+                        if (newBillInfo != null) {
+                            billInfo.setQuantity(newBillInfo.getQuantity());
+                            food.setSoLuongTon(food.getSoLuongTon() - 1);
+                            notifyDataSetChanged();
+
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    showErrorResponse(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBillInfoById> call, Throwable t) {
+                showFailedResponse();
+            }
+        });
+    }
+
+    private void createBillInfo(Bill bill, Food food) {
+        BillInfo newBillInfo = new BillInfo(bill.get_id(), food.get_id(), 1, food.getPrice());
+        BillInfoApi.billInfoApi.createBillInfo(newBillInfo).enqueue(new Callback<ResponseBillInfoById>() {
+            @Override
+            public void onResponse(Call<ResponseBillInfoById> call, Response<ResponseBillInfoById> response) {
+
+                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
+                    try {
+                        BillInfo newBillInfo = response.body().getBillInfo();
+
+                        if (newBillInfo != null) {
+                            bill.getBillinfos().add(newBillInfo);
+                            food.setSoLuongTon(food.getSoLuongTon() - newBillInfo.getQuantity());
+                            notifyDataSetChanged();
+
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    showErrorResponse(response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBillInfoById> call, Throwable t) {
+                showFailedResponse();
+            }
+        });
+    }
+
+    private void showErrorResponse(Response<?> response) {
+        JsonParser parser = new JsonParser();
+        JsonElement mJson = null;
+        try {
+            mJson = parser.parse(response.errorBody().string());
+            Gson gson = new Gson();
+            ApiError errorResponse = gson.fromJson(mJson, ApiError.class);
+
+            Toast.makeText(context, errorResponse.getError(), Toast.LENGTH_SHORT).show();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void showFailedResponse() {
+        Toast.makeText(context, MyApplication.MESSAGE_TOAST_SERVER_NOTRESPONSE, Toast.LENGTH_SHORT).show();
     }
 }

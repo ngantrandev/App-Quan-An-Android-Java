@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResponseBillInfoById {
     private String message, status, error;
-    @SerializedName("billinfo")
+    @SerializedName("billInfo")
     BillInfo billInfo;
 
     public String getMessage() {
