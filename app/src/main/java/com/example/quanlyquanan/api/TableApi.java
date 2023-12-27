@@ -2,6 +2,7 @@ package com.example.quanlyquanan.api;
 
 import com.example.quanlyquanan.model.Category;
 import com.example.quanlyquanan.model.Table;
+import com.example.quanlyquanan.model.TransferTable;
 import com.example.quanlyquanan.response.ResponseCategoryById;
 import com.example.quanlyquanan.response.ResponseTable;
 import com.example.quanlyquanan.response.ResponseTableById;
@@ -18,6 +19,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
@@ -40,6 +42,11 @@ public interface TableApi {
 
     @PATCH("/tables/{id}")
     Call<ResponseTableById> changeTableInfo(@Path("id") String id, @Body Table table);
+
+    @PUT("/tables/chuyenban")
+    Call<ResponseTableById> chuyenban(@Body TransferTable transferTable);
+
+
 
 //    @DELETE("/tables/{id}")
 //    Call<ResponseTableById> deleteById(@Path("id") String id);

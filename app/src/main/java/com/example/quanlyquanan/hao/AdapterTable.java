@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.quanlyquanan.R;
 import com.example.quanlyquanan.activity.MainActivity;
 import com.example.quanlyquanan.adapter.AdapterListTable;
+import com.example.quanlyquanan.adapter.AdapterListTableChuyenBan;
 import com.example.quanlyquanan.api.TableApi;
 import com.example.quanlyquanan.model.Table;
 import com.example.quanlyquanan.response.ResponseTable;
@@ -48,14 +49,19 @@ import retrofit2.Response;
 public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
     Context context;
     List<Table> data;
-    public AdapterTable(Context context, List<Table> data){
+
+    OnTransferTable onTransferTable;
+
+    public AdapterTable(Context context, List<Table> data,OnTransferTable onTransferTable) {
         this.context = context;
         this.data = data;
+        this.onTransferTable = onTransferTable;
     }
+
     @NonNull
     @Override
     public HolderTable onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view  = LayoutInflater.from(context).inflate(R.layout.item_table_hao,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_table_hao, parent, false);
         return new HolderTable(view);
     }
 
@@ -66,28 +72,28 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
 
         Log.d("TAG", "onBindViewHolder: " + table.getTableName());
         //Check Button StatusTable
-        if(table.getStatus() == 1){
+        if (table.getStatus() == 1) {
             holder.tableStatus.setText("Đang sử dụng");
             holder.btnReturn.setVisibility(View.VISIBLE);
-            holder.itemlayer.setCardBackgroundColor(ContextCompat.getColor(context,R.color.red));
+            holder.itemlayer.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
             holder.thumb.setImageResource(R.drawable.baseline_table_bar_24_white);
-            holder.tableTitle.setTextColor(ContextCompat.getColor(context,R.color.white));
-            holder.tableNote.setTextColor(ContextCompat.getColor(context,R.color.white));
-            holder.tableStatus.setTextColor(ContextCompat.getColor(context,R.color.green));
-            holder.tableLabelStatus.setTextColor(ContextCompat.getColor(context,R.color.white));
-        }else{
+            holder.tableTitle.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tableNote.setTextColor(ContextCompat.getColor(context, R.color.white));
+            holder.tableStatus.setTextColor(ContextCompat.getColor(context, R.color.green));
+            holder.tableLabelStatus.setTextColor(ContextCompat.getColor(context, R.color.white));
+        } else {
             holder.tableStatus.setText("Trống");
-            holder.itemlayer.setCardBackgroundColor(ContextCompat.getColor(context,R.color.white));
+            holder.itemlayer.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white));
             holder.thumb.setImageResource(R.drawable.baseline_table_bar_24_black);
-            holder.tableTitle.setTextColor(ContextCompat.getColor(context,R.color.black));
-            holder.tableNote.setTextColor(ContextCompat.getColor(context,R.color.black));
-            holder.tableStatus.setTextColor(ContextCompat.getColor(context,R.color.black));
-            holder.tableLabelStatus.setTextColor(ContextCompat.getColor(context,R.color.black));
+            holder.tableTitle.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.tableNote.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.tableStatus.setTextColor(ContextCompat.getColor(context, R.color.black));
+            holder.tableLabelStatus.setTextColor(ContextCompat.getColor(context, R.color.black));
             holder.btnReturn.setVisibility(View.INVISIBLE);
         }
-        if(table.getNote().length()<1){
+        if (table.getNote().length() < 1) {
             holder.tableNote.setText("Thêm ghi chú");
-        }else{
+        } else {
             holder.tableNote.setText(table.getNote());
         }
         //Click Button Select Table
@@ -100,7 +106,7 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
         holder.itemlayer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                    OpenBottomSheetChangeTable();
+                OpenBottomSheetChangeTable(position);
                 return false;
             }
         });
@@ -116,7 +122,7 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
         holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+
 //                showdialog(table.getIdTable());
             }
         });
@@ -133,22 +139,23 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
         return data.size();
     }
 
-    public void openFoodMenu(Table table){
-        Intent intent = new Intent(context,activity_food_menu.class);
-        intent.putExtra("table",table);
+    public void openFoodMenu(Table table) {
+        Intent intent = new Intent(context, activity_food_menu.class);
+        intent.putExtra("table", table);
 //        intent.putExtra("dsFood", (Serializable) dsfood);
         context.startActivity(intent);
     }
-    public void showdialog(int id){
+
+    public void showdialog(int id) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.fragment_button_sheet_note);
         Button btnDone = dialog.findViewById(R.id.btndone);
         EditText notecontent = dialog.findViewById(R.id.notecontent);
         TextView limitvaluetext = dialog.findViewById(R.id.limitvalue);
-        notecontent.setTextColor(ContextCompat.getColor(context,R.color.black));
-        notecontent.setHintTextColor(ContextCompat.getColor(context,R.color.black));
-        notecontent.setFilters(new InputFilter[] { new InputFilter.LengthFilter(100) });
+        notecontent.setTextColor(ContextCompat.getColor(context, R.color.black));
+        notecontent.setHintTextColor(ContextCompat.getColor(context, R.color.black));
+        notecontent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(100)});
         notecontent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -157,32 +164,33 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                limitvaluetext.setText(charSequence.length()+"");
+                limitvaluetext.setText(charSequence.length() + "");
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
             }
         });
-        if (data.get(id).getNote().length()>0){
+        if (data.get(id).getNote().length() > 0) {
             notecontent.setText(data.get(id).getNote());
         }
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String msg = "";
-                    msg = notecontent.getText().toString();
-                    data.get(id).setNote(msg);
-                    dialog.cancel();
-                    notifyDataSetChanged();
+                msg = notecontent.getText().toString();
+                data.get(id).setNote(msg);
+                dialog.cancel();
+                notifyDataSetChanged();
             }
         });
         dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setGravity(Gravity.BOTTOM);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
-    public void CheckReturn(Table table){
+
+    public void CheckReturn(Table table) {
 //        boolean check = true;
 //        for (FoodInfo f:table.getDsFoodSelection()) {
 //            if(f.getFoodSelAmount()!=0){
@@ -197,67 +205,74 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
 //            notifyDataSetChanged();
 //        }
 
-        if(table.getBill().equals("")){
+        if (table.getBill().equals("")) {
             table.setStatus(0);
             notifyDataSetChanged();
-        }
-        else {
+        } else {
             Toast.makeText(context, "Vui lòng thanh toán", Toast.LENGTH_SHORT).show();
         }
     }
+
     List<Table> dsTable = new ArrayList<>();
     List<Table> dsTableFilter = new ArrayList<>();
-    AdapterListTable adapterTable;
-    public void OpenBottomSheetChangeTable(){
+    AdapterListTableChuyenBan adapterTable;
+
+    public void OpenBottomSheetChangeTable(int position) {
+        Table table = data.get(position);
+
         View viewBottomSheet = LayoutInflater.from(context).inflate(R.layout.layout_bottomsheet_changetable, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(viewBottomSheet);
         List<String> filterTitle = new ArrayList<>();
         ArrayAdapter adapterTitle;
-        filterTitle.add("Chuyển bàn");
+
+        if (table.getStatus() == 1) {
+            filterTitle.add("Chuyển bàn");
+        }
         filterTitle.add("Ghép bàn");
+
         RecyclerView tableLV = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_lvtable);
         Spinner spinnerTitle = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_SpinnerTitle);
         Button btn_Accept = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_Accept);
         Button btn_Cancel = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_Cancel);
         TextView textStatus = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_StatusText);
         textStatus.setText("Đợi xíu");
-        adapterTitle = new ArrayAdapter(context, android.R.layout.simple_list_item_1,filterTitle);
+        adapterTitle = new ArrayAdapter(context, android.R.layout.simple_list_item_1, filterTitle);
         spinnerTitle.setAdapter(adapterTitle);
-        adapterTable =  new AdapterListTable(context,dsTableFilter);
+        adapterTable = new AdapterListTableChuyenBan(data.get(position), context, dsTableFilter,onTransferTable);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         tableLV.setLayoutManager(linearLayoutManager);
         tableLV.setAdapter(adapterTable);
-        loadTableList(textStatus,tableLV);
+        loadTableList(textStatus, tableLV);
         BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) viewBottomSheet.getParent());
         bottomSheetBehavior.setPeekHeight(1000);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetDialog.show();
     }
-    void loadTableList(TextView textStatus,RecyclerView tableLV ){
+
+    void loadTableList(TextView textStatus, RecyclerView tableLV) {
         TableApi.tableApi.getTables().enqueue(new Callback<ResponseTable>() {
             @Override
             public void onResponse(Call<ResponseTable> call, Response<ResponseTable> response) {
-                if(response.isSuccessful() && response.body().getStatus().equals("Success")){
+                if (response.isSuccessful() && response.body().getStatus().equals("Success")) {
                     dsTable.clear();
                     dsTableFilter.clear();
                     dsTable = response.body().getTableList();
                     for (Table t : dsTable) {
-                        if(t.getStatus()==0){
+                        if (t.getStatus() == 0) {
                             dsTableFilter.add(t);
                         }
                     }
-                    if (dsTableFilter.size()>0){
+                    if (dsTableFilter.size() > 0) {
                         textStatus.setVisibility(View.GONE);
                         tableLV.setVisibility(View.VISIBLE);
-                    }else{
+                    } else {
                         textStatus.setText("Không tồn tại bàn đáp ứng yêu cầu");
                         textStatus.setVisibility(View.VISIBLE);
                         tableLV.setVisibility(View.GONE);
                     }
                     adapterTable.notifyDataSetChanged();
-                }
-                else {
+                } else {
                     Toast.makeText(context, response.body().getError(), Toast.LENGTH_LONG).show();
                 }
             }

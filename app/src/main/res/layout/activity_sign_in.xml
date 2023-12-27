@@ -81,6 +81,7 @@
                 android:backgroundTint="@null"
                 android:drawableLeft="@drawable/ic_lock"
                 android:hint="Mật khẩu"
+                android:inputType="textPassword"
                 android:paddingLeft="15dp" />
 
             <Button

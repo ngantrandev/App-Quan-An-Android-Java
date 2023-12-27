@@ -67,16 +67,6 @@ public class Table implements Parcelable {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "Table{" +
-                "note='" + note + '\'' +
-                ", tableName='" + tableName + '\'' +
-                ", status=" + status +
-                ", bill='" + bill + '\'' +
-                '}';
-    }
-
     // Parcelable implementation
 
     protected Table(Parcel in) {
@@ -111,5 +101,16 @@ public class Table implements Parcelable {
         dest.writeString(tableName);
         dest.writeInt(status);
         dest.writeString(bill);
+    }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "_id='" + _id + '\'' +
+                ", note='" + note + '\'' +
+                ", tableName='" + tableName + '\'' +
+                ", status=" + status +
+                ", bill='" + bill + '\'' +
+                '}';
     }
 }

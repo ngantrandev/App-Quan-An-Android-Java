@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class activity_table_menu extends AppCompatActivity {
+public class activity_table_menu extends AppCompatActivity implements OnTransferTable{
     List<Table> dsTable = new ArrayList<>();
     List<Table> dsTableFilter = new ArrayList<>();
     RecyclerView TableLv;
@@ -59,7 +59,7 @@ public class activity_table_menu extends AppCompatActivity {
         tableMenuCardBtnSearch = findViewById(R.id.tableMenuCardBtnSearch);
         btnsearch = findViewById(R.id.tableMenuBtnSearch);
         createOptionFilter();
-        tableAdapter = new AdapterTable(this,dsTableFilter);
+        tableAdapter = new AdapterTable(this,dsTableFilter,this);
         TableLv.setAdapter(tableAdapter);
         TableLv.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
 
@@ -215,4 +215,8 @@ public class activity_table_menu extends AppCompatActivity {
         loadTableList();
     }
 
+    @Override
+    public void onTransferTable() {
+        loadTableList();
+    }
 }
