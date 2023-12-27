@@ -154,6 +154,7 @@ public class activity_food_menu extends AppCompatActivity {
 
                                 Bill newBill = response.body().getBill();
                                 mtable.setBill(newBill.get_id());
+//                                mtable.setStatus(1);
 
                                 Log.d("CREATEBILL", "onResponse: newbill" + newBill.toString());
                                 mBill = newBill;

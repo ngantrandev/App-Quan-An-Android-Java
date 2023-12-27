@@ -200,6 +200,7 @@ public class activity_table_menu extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        tableAdapter.notifyDataSetChanged();
+//        tableAdapter.notifyDataSetChanged();
+        loadTableList();
     }
 }
