@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+    <Spinner
+        android:id="@+id/buttonsheetChangetable_SpinnerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="Chuyển bàn"
+        android:gravity="center"
+        android:textSize="30dp"
+        android:paddingHorizontal="20dp"
+        />
+    <!--        android:drawableRight="@drawable/baseline_arrow_drop_down_24"-->
+    <TextView
+        android:id="@+id/buttonsheetChangetable_StatusText"
+        android:layout_weight="16.5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đang lấy dữ liệu"
+        android:gravity="center"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:id="@+id/buttonsheetChangetable_lvtable"
+        android:layout_weight="16.5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_weight="1.5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        >
+        <Button
+            android:id="@+id/buttonsheetChangetable_Cancel"
+            android:layout_marginHorizontal="5dp"
+            android:layout_weight="2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Huỷ"/>
+        <Button
+            android:id="@+id/buttonsheetChangetable_Accept"
+            android:layout_marginHorizontal="5dp"
+            android:layout_weight="2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="chấp nhận"/>
+    </LinearLayout>
+</LinearLayout>

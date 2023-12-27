@@ -10,6 +10,10 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.model.Table;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HolderTable extends RecyclerView.ViewHolder {
     ImageView thumb;
@@ -29,4 +33,5 @@ public class HolderTable extends RecyclerView.ViewHolder {
         btnReturn = itemView.findViewById(R.id.itemTableBtnReturn);
 
     }
+
 }

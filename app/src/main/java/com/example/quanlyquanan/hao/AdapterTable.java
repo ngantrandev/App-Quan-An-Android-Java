@@ -14,19 +14,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quanlyquanan.R;
+import com.example.quanlyquanan.activity.MainActivity;
+import com.example.quanlyquanan.adapter.AdapterListTable;
+import com.example.quanlyquanan.api.TableApi;
 import com.example.quanlyquanan.model.Table;
+import com.example.quanlyquanan.response.ResponseTable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
     Context context;
@@ -78,6 +95,13 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
             @Override
             public void onClick(View view) {
                 holder.btnSel.performClick();
+            }
+        });
+        holder.itemlayer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                    OpenBottomSheetChangeTable();
+                return false;
             }
         });
         holder.btnSel.setOnClickListener(new View.OnClickListener() {
@@ -180,5 +204,68 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
         else {
             Toast.makeText(context, "Vui lòng thanh toán", Toast.LENGTH_SHORT).show();
         }
+    }
+    List<Table> dsTable = new ArrayList<>();
+    List<Table> dsTableFilter = new ArrayList<>();
+    AdapterListTable adapterTable;
+    public void OpenBottomSheetChangeTable(){
+        View viewBottomSheet = LayoutInflater.from(context).inflate(R.layout.layout_bottomsheet_changetable, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        bottomSheetDialog.setContentView(viewBottomSheet);
+        List<String> filterTitle = new ArrayList<>();
+        ArrayAdapter adapterTitle;
+        filterTitle.add("Chuyển bàn");
+        filterTitle.add("Ghép bàn");
+        RecyclerView tableLV = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_lvtable);
+        Spinner spinnerTitle = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_SpinnerTitle);
+        Button btn_Accept = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_Accept);
+        Button btn_Cancel = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_Cancel);
+        TextView textStatus = viewBottomSheet.findViewById(R.id.buttonsheetChangetable_StatusText);
+        textStatus.setText("Đợi xíu");
+        adapterTitle = new ArrayAdapter(context, android.R.layout.simple_list_item_1,filterTitle);
+        spinnerTitle.setAdapter(adapterTitle);
+        adapterTable =  new AdapterListTable(context,dsTableFilter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        tableLV.setLayoutManager(linearLayoutManager);
+        tableLV.setAdapter(adapterTable);
+        loadTableList(textStatus,tableLV);
+        BottomSheetBehavior<View> bottomSheetBehavior = BottomSheetBehavior.from((View) viewBottomSheet.getParent());
+        bottomSheetBehavior.setPeekHeight(1000);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        bottomSheetDialog.show();
+    }
+    void loadTableList(TextView textStatus,RecyclerView tableLV ){
+        TableApi.tableApi.getTables().enqueue(new Callback<ResponseTable>() {
+            @Override
+            public void onResponse(Call<ResponseTable> call, Response<ResponseTable> response) {
+                if(response.isSuccessful() && response.body().getStatus().equals("Success")){
+                    dsTable.clear();
+                    dsTableFilter.clear();
+                    dsTable = response.body().getTableList();
+                    for (Table t : dsTable) {
+                        if(t.getStatus()==0){
+                            dsTableFilter.add(t);
+                        }
+                    }
+                    if (dsTableFilter.size()>0){
+                        textStatus.setVisibility(View.GONE);
+                        tableLV.setVisibility(View.VISIBLE);
+                    }else{
+                        textStatus.setText("Không tồn tại bàn đáp ứng yêu cầu");
+                        textStatus.setVisibility(View.VISIBLE);
+                        tableLV.setVisibility(View.GONE);
+                    }
+                    adapterTable.notifyDataSetChanged();
+                }
+                else {
+                    Toast.makeText(context, response.body().getError(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseTable> call, Throwable t) {
+                Toast.makeText(context, "Ket noi server that bai", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

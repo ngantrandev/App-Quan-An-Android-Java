@@ -3,9 +3,11 @@ package com.example.quanlyquanan.hao;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import com.example.quanlyquanan.activity.StartActivity;
 import com.example.quanlyquanan.api.TableApi;
 import com.example.quanlyquanan.model.Table;
 import com.example.quanlyquanan.response.ResponseTable;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +91,13 @@ public class activity_table_menu extends AppCompatActivity {
 //
 //            }
 //        });
+        TableLv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                return false;
+            }
+        });
         findViewById(R.id.tableMenuBtnBack).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -203,4 +214,5 @@ public class activity_table_menu extends AppCompatActivity {
 //        tableAdapter.notifyDataSetChanged();
         loadTableList();
     }
+
 }
