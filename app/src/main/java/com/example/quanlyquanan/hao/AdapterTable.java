@@ -74,7 +74,7 @@ public class AdapterTable extends RecyclerView.Adapter<HolderTable> {
         //Check Button StatusTable
         if (table.getStatus() == 1) {
             holder.tableStatus.setText("Đang sử dụng");
-            holder.btnReturn.setVisibility(View.VISIBLE);
+//            holder.btnReturn.setVisibility(View.VISIBLE);
             holder.itemlayer.setCardBackgroundColor(ContextCompat.getColor(context, R.color.red));
             holder.thumb.setImageResource(R.drawable.baseline_table_bar_24_white);
             holder.tableTitle.setTextColor(ContextCompat.getColor(context, R.color.white));

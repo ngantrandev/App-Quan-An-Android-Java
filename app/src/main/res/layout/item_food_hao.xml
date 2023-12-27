@@ -132,6 +132,7 @@
                 android:id="@+id/itemFoodBtnNote"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
+                android:visibility="gone"
                 android:layout_height="match_parent"
                 android:text="Ghi chú"
                 android:padding="10dp"
