@@ -4,7 +4,7 @@ import android.Manifest;
 import android.app.Application;
 
 public class MyApplication extends Application {
-    public static final String BASE_API_URL = "http://10.251.0.19:8080";
+    public static final String BASE_API_URL = "http://192.168.1.4:8080";
     public static final String MESSAGE_TOAST_CREATEFOOD_SUCCESS ="Thêm món ăn thành công";
     public static final String MESSAGE_TOAST_CREATEFOOD_FAILED ="Thêm món ăn thất bại";
     public static final String MESSAGE_TOAST_SERVER_NOTRESPONSE = "Máy chủ không thể phản hồi";
