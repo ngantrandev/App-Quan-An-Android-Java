@@ -19,8 +19,8 @@
 | ![Màn hình đăng nhập](./image_doc/dangnhap.jpg) | ![Màn hình chính dành cho tài khoản quản lý](./image_doc/manhinhchinh.jpg) | ![Màn hình chính dành cho tài khoản nhân viên](./image_doc/manhinhchinh1.jpg) |
 
 
- | Màn hình quản lý món ăn | Màn hình quản lý bàn ăn dành cho quản lý | Màn hình thống kê doanh thu | Màn hình quản lý bàn ăn
+ | Màn hình quản lý món ăn | Màn hình quản lý bàn ăn dành cho quản lý | Màn hình thống kê doanh thu | Màn hình danh sách bàn ăn|
 | --- | --- | --- | --- |
-| ![Màn hình quản lý món ăn](./image_doc/danhsachmonan.jpg) | ![Màn hình quản lý bàn ăn dành cho quản lý](./image_doc/quanlybanan.jpg) | ![Màn hình thống kê doanh thu](./image_doc/thongke.jpg) | ![Màn hình quản lý bàn ăn](./image_doc/quanlybanan.jpg) |
+| ![Màn hình quản lý món ăn](./image_doc/danhsachmonan.jpg) | ![Màn hình quản lý bàn ăn dành cho quản lý](./image_doc/quanlybanan.jpg) | ![Màn hình thống kê doanh thu](./image_doc/thongke.jpg) | ![Màn hình danh sách bàn ăn](./image_doc/danhsachbanan.jpg) |
 
 
